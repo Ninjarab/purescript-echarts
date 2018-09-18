@@ -20,11 +20,12 @@ import Data.Tuple (Tuple(..))
 import Foreign (toForeign)
 import Data.NonEmpty as NE
 
-import DOM.Event.EventTarget (eventListener, addEventListener)
-import DOM.HTML (window)
-import DOM.HTML.Event.EventTypes (load)
-import DOM.HTML.Types (HTMLElement, windowToEventTarget, htmlDocumentToNonElementParentNode, readHTMLElement)
-import DOM.HTML.Window (document)
+import Web.Event.EventTarget (eventListener, addEventListener)
+import Web.HTML (window)
+import Web.HTML.Event.EventTypes (load)
+import Web.HTML.HTMLElement (HTMLElement)
+import Web.DOM.Document (toEventTarget, toNonElementParentNode)
+import Web.HTML.Window (document)
 import Web.DOM.NonElementParentNode as NEPN
 
 import Math (round, pow)
@@ -34,8 +35,8 @@ getElementById ∷ String → Effect (Maybe HTMLElement)
 getElementById elementId = do
   win ← window
   doc ← document win
-  el ← NEPN.getElementById elementId (htmlDocumentToNonElementParentNode doc)
-  pure $ either (const Nothing) Just $ runExcept $ readHTMLElement (toForeign <<< unsafePartial fromJust $ el)
+  el ← NEPN.getElementById elementId (toNonElementParentNode doc)
+  pure el
 
 onLoad
   ∷ ∀ a
@@ -43,7 +44,7 @@ onLoad
   → Effect Unit
 onLoad handler =
   addEventListener load (eventListener (const handler)) false
-    <<< windowToEventTarget
+    <<< toEventTarget
     =<< window
 
 precise ∷ Number → Number → Number
