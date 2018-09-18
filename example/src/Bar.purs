@@ -6,7 +6,6 @@ import Color as C
 
 import Effect (Effect)
 import Effect.Random (random)
-import DOM.Node.Types (ElementId(..))
 import Data.Array as Arr
 import Data.Maybe (Maybe(..))
 import Data.Traversable as F
@@ -139,7 +138,7 @@ genInp = F.for (Arr.range 0 10) \i → do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "bar"
+  mbEl ← U.getElementById "bar"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'bar' id"
     Just el → do

@@ -8,7 +8,7 @@ import Data.Maybe (Maybe(..), maybe)
 import Data.NonEmpty as NE
 import Data.Tuple (Tuple(..), uncurry)
 import Debug.Trace as DT
-import DOM.Node.Types (ElementId(..))
+
 import ECharts.Chart as EC
 import ECharts.Theme as ETheme
 import ECharts.Types as ET

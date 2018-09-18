@@ -14,7 +14,7 @@ import Data.DateTime as D
 import Data.DateTime.Instant (toDateTime)
 import Data.Time.Duration (Milliseconds(..))
 
-import DOM.Node.Types (ElementId(..))
+
 
 import Debug.Trace as DT
 
@@ -92,7 +92,7 @@ optStream acc =
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "line"
+  mbEl ← U.getElementById "line"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with line id"
     Just el → do

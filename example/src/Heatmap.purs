@@ -12,7 +12,7 @@ import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM.Node.Types (ElementId(..))
+
 
 import ECharts.Chart as EC
 import ECharts.Types as ET
@@ -113,7 +113,7 @@ options = do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "heatmap"
+  mbEl ← U.getElementById "heatmap"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'heatmap' id"
     Just el → do

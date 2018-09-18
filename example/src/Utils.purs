@@ -26,12 +26,11 @@ import DOM.HTML.Event.EventTypes (load)
 import DOM.HTML.Types (HTMLElement, windowToEventTarget, htmlDocumentToNonElementParentNode, readHTMLElement)
 import DOM.HTML.Window (document)
 import Web.DOM.NonElementParentNode as NEPN
-import DOM.Node.Types (ElementId)
 
 import Math (round, pow)
 import Partial.Unsafe (unsafePartial)
 
-getElementById ∷ ElementId → Effect (Maybe HTMLElement)
+getElementById ∷ String → Effect (Maybe HTMLElement)
 getElementById elementId = do
   win ← window
   doc ← document win

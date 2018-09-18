@@ -8,7 +8,7 @@ import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM.Node.Types (ElementId(..))
+
 
 import ECharts.Chart as EC
 import ECharts.Types as ET
@@ -89,7 +89,7 @@ options = do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "graph"
+  mbEl ← U.getElementById "graph"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'graph' id"
     Just el → do

@@ -10,7 +10,7 @@ import Data.Foldable (traverse_)
 import Data.Maybe (Maybe(..), fromJust)
 
 import Debug.Trace as DT
-import DOM.Node.Types (ElementId(..))
+
 
 import ECharts.Chart as EC
 import ECharts.Types as ET
@@ -96,7 +96,7 @@ options = do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "heatmap-calendar"
+  mbEl ← U.getElementById "heatmap-calendar"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'heatmap-calendar' id"
     Just el → do

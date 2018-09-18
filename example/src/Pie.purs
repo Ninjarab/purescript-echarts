@@ -7,7 +7,7 @@ import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Data.Variant as V
 import Debug.Trace as DT
-import DOM.Node.Types (ElementId(..))
+
 import ECharts.Chart as EC
 import ECharts.Event as EE
 import ECharts.Types as ET
@@ -77,7 +77,7 @@ options = do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "pie"
+  mbEl ← U.getElementById "pie"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with pie id"
     Just el → do

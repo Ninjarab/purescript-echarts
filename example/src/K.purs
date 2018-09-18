@@ -7,7 +7,7 @@ import Data.Foldable as F
 import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
-import DOM.Node.Types (ElementId(..))
+
 
 import ECharts.Chart as EC
 import ECharts.Types as ET
@@ -53,7 +53,7 @@ options = do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "k"
+  mbEl ← U.getElementById "k"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'k' id"
     Just el → do

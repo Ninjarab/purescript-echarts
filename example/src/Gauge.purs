@@ -9,8 +9,6 @@ import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM.Node.Types (ElementId(..))
-
 import ECharts.Chart as EC
 import ECharts.Types as ET
 import ECharts.Types.Phantom as ETP
@@ -162,7 +160,7 @@ dataStream =
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "gauge"
+  mbEl ← U.getElementById "gauge"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'gauge' id"
     Just el → do

@@ -11,8 +11,6 @@ import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM.Node.Types (ElementId(..))
-
 import ECharts.Chart as EC
 import ECharts.Types as ET
 import ECharts.Types.Phantom as ETP
@@ -114,7 +112,7 @@ options = do
 
 chart ∷ Effect Unit
 chart = do
-  mbEl ← U.getElementById $ ElementId "funnel"
+  mbEl ← U.getElementById "funnel"
   case mbEl of
     Nothing → DT.traceAnyA "There is no element with 'funnel' id"
     Just el → do
