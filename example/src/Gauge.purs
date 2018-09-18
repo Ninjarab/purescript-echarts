@@ -2,15 +2,13 @@ module Gauge where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Random (RANDOM, random)
+import Effect (Effect)
+import Effect.Random (random)
 
 import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 
 import ECharts.Chart as EC
@@ -151,8 +149,7 @@ initialVal =
 
 
 
-dataStream
-  ∷ ∀ e. Signal (Eff (random ∷ RANDOM|e) {speed ∷ Number, r ∷ Number, gas ∷ Number, water ∷ Number })
+dataStream ∷ Signal (Effect {speed ∷ Number, r ∷ Number, gas ∷ Number, water ∷ Number })
 dataStream =
   every 2000.0 ~> \_ → do
     speed ← random <#> (mul 100.0 >>> U.precise 2.0)
@@ -163,7 +160,7 @@ dataStream =
 
 
 
-chart ∷ ∀ e. Eff (random ∷ RANDOM, dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "gauge"
   case mbEl of

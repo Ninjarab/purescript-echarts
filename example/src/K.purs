@@ -2,15 +2,11 @@ module K where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
-
+import Effect (Effect)
 import Data.Foldable as F
 import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
-
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 
 import ECharts.Chart as EC
@@ -55,7 +51,7 @@ options = do
       , [ 2360.75, 2382.48, 2347.89, 2383.76 ]
       ]
 
-chart ∷ ∀ e. Eff (dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "k"
   case mbEl of

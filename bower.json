@@ -23,21 +23,21 @@
     "dist"
   ],
   "dependencies": {
-    "purescript-eff": "^3.1.0",
-    "purescript-control": "^3.3.1",
-    "purescript-foreign": "^4.0.1",
-    "purescript-dom": "^4.14.0",
-    "purescript-transformers": "^3.5.0",
-    "purescript-colors": "^4.3.0",
-    "purescript-variant": "^4.0.0",
-    "purescript-aff": "^4.0.2"
+    "purescript-effect": "^2.0.0",
+    "purescript-control": "^4.1.0",
+    "purescript-foreign": "^5.0.0",
+    "purescript-web-html": "^1.0.0",
+    "purescript-transformers": "^4.1.0",
+    "purescript-colors": "^5.0.0",
+    "purescript-variant": "^5.1.0",
+    "purescript-aff": "^5.0.2"
   },
   "devDependencies": {
-    "purescript-debug": "^3.0.0",
-    "purescript-random": "^3.0.0",
-    "purescript-nonempty": "^4.1.1",
-    "purescript-signal": "^9.0.0",
-    "purescript-now": "^3.0.0",
-    "purescript-formatters": "^3.0.1"
+    "purescript-debug": "^4.0.0",
+    "purescript-random": "^4.0.0",
+    "purescript-nonempty": "^5.0.0",
+    "purescript-signal": "^10.1.0",
+    "purescript-now": "^4.0.0",
+    "purescript-formatters": "^4.0.0"
   }
 }

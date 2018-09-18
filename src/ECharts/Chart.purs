@@ -12,32 +12,30 @@ module ECharts.Chart
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Eff.Exception (EXCEPTION)
+import Effect (Effect)
+import Effect.Class (class MonadEffect, liftEff)
 import Data.Either (either)
-import Data.Foreign (Foreign, toForeign)
-import DOM (DOM)
+import Foreign (Foreign, toForeign)
 import DOM.HTML.Types (HTMLElement)
 import ECharts.Internal (undefinedValue)
 import ECharts.Theme (Theme, builtInThemeName)
 import ECharts.Types (Chart, ECHARTS, Option)
 
 foreign import initImpl
-  ∷ ∀ e. Foreign
+  ∷ Foreign
   → HTMLElement
-  → Eff (dom ∷ DOM, echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) Chart
+  → Effect Chart
 
 init
-  ∷ ∀ m e
-  . MonadEff (dom ∷ DOM, echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ HTMLElement
   → m Chart
 init el = liftEff $ initImpl undefinedValue el
 
 initWithTheme
-  ∷ ∀ m e
-  . MonadEff (dom ∷ DOM, echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Theme
   → HTMLElement
   → m Chart
@@ -45,72 +43,64 @@ initWithTheme theme el =
   liftEff $ initImpl (either (toForeign <<< builtInThemeName) toForeign theme) el
 
 foreign import registerTheme
-  ∷ ∀ e. String
+  ∷ String
   → Foreign
-  → Eff (echarts ∷ ECHARTS|e) Unit
+  → Effect Unit
 
 foreign import setOptionImpl
-  ∷ ∀ e. Option → Chart → Eff (echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) Unit
+  ∷ Option → Chart → Effect Unit
 
 setOption
-  ∷ ∀ m e
-  . MonadEff (echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Option
   → Chart
   → m Unit
 setOption opts chart = liftEff $ setOptionImpl opts chart
 
-
-foreign import resetOptionImpl
-  ∷ ∀ e. Option → Chart → Eff (echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) Unit
-
+foreign import resetOptionImpl ∷ Option → Chart → Effect Unit
 
 resetOption
-  ∷ ∀ m e
-  . MonadEff (echarts ∷ ECHARTS, exception ∷ EXCEPTION|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Option
   → Chart
   → m Unit
 resetOption opts chart = liftEff $ resetOptionImpl opts chart
 
-
-foreign import resizeImpl
-  ∷ ∀ e. Chart → Eff (echarts ∷ ECHARTS|e) Unit
+foreign import resizeImpl ∷ Chart → Effect Unit
 
 resize
-  ∷ ∀ m e
-  . MonadEff (echarts ∷ ECHARTS|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Chart
   → m Unit
 resize chart = liftEff $ resizeImpl chart
 
 
-foreign import clearImpl
-  ∷ ∀ e. Chart → Eff (echarts ∷ ECHARTS|e) Unit
+foreign import clearImpl ∷ Chart → Effect Unit
 
 clear
-  ∷ ∀ m e
-  . MonadEff (echarts ∷ ECHARTS|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Chart
   → m Unit
 clear chart = liftEff $ clearImpl chart
 
-foreign import disposeImpl
-  ∷ ∀ e. Chart → Eff (echarts ∷ ECHARTS|e) Unit
+foreign import disposeImpl ∷ Chart → Effect Unit
 
 dispose
-  ∷ ∀ m e
-  . MonadEff (echarts ∷ ECHARTS|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Chart
   → m Unit
 dispose chart = liftEff $ disposeImpl chart
 
-foreign import getOptionImpl
-  ∷ ∀ e. Chart → Eff (echarts ∷ ECHARTS|e) Foreign
+foreign import getOptionImpl ∷ Chart → Effect Foreign
 
 getOption
-  ∷ ∀ m e
-  . MonadEff (echarts ∷ ECHARTS|e) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Chart
   → m Foreign
 getOption chart = liftEff $ getOptionImpl chart

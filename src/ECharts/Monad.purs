@@ -4,10 +4,10 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Control.Monad.Aff.Class (class MonadAff)
+import Effect.Aff (class MonadAff)
 import Control.Monad.Cont.Class (class MonadCont)
-import Control.Monad.Eff (kind Effect)
-import Control.Monad.Eff.Class (class MonadEff)
+import Effect (kind Effect)
+import Effect.Class (class MonadEffect)
 import Control.Monad.Error.Class (class MonadError, class MonadThrow)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec)
@@ -21,7 +21,7 @@ import Control.Plus (class Plus, empty)
 import Data.Array as Arr
 import Data.Bifunctor (rmap)
 import Data.Foldable as F
-import Data.Foreign (Foreign, toForeign)
+import Foreign (Foreign, toForeign)
 import Data.Identity (Identity)
 import Data.Maybe (Maybe(..), maybe)
 import Data.Newtype (class Newtype, unwrap)
@@ -68,7 +68,7 @@ derive newtype instance monadPlusCommandsT
 derive newtype instance monadAffCommandsT
   ∷ MonadAff e m ⇒ MonadAff e (CommandsT i m)
 derive newtype instance monadEffCommandsT
-  ∷ MonadEff e m ⇒ MonadEff e (CommandsT i m)
+  ∷ MonadEffect e m ⇒ MonadEffect e (CommandsT i m)
 derive newtype instance monadContCommandsT
   ∷ MonadCont m ⇒ MonadCont (CommandsT i m)
 derive newtype instance monadThrowCommandsT

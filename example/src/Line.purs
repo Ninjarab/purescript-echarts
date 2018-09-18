@@ -2,10 +2,9 @@ module Line where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Random (RANDOM, random)
-import Control.Monad.Eff.Now (NOW, now)
+import Effect (Effect)
+import Effect.Random (random)
+import Effect.Now (now)
 
 import Data.Array (head)
 import Data.Either (either)
@@ -15,7 +14,6 @@ import Data.DateTime as D
 import Data.DateTime.Instant (toDateTime)
 import Data.Time.Duration (Milliseconds(..))
 
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 
 import Debug.Trace as DT
@@ -63,7 +61,7 @@ type Accum =
   }
 
 dataStream
-  ∷ ∀ e i. Accum → Signal (Eff (random ∷ RANDOM|e) (DSL' (items ∷ I|i)))
+  ∷ ∀ i. Accum → Signal (Effect (DSL' (items ∷ I|i)))
 dataStream start =
   accumStream ~> map (void <<< E.itemsDSL <<< _.values)
   where
@@ -86,13 +84,13 @@ dataStream start =
 
     pure { value: newValue, dt: newTime, values: [newItem] <> acc.values }
 
-optStream ∷ ∀ e. Accum → Signal (Eff (now ∷ NOW, random ∷ RANDOM|e) (DSL' ETP.OptionI))
+optStream ∷ Accum → Signal (Effect (DSL' ETP.OptionI))
 optStream acc =
   dataStream acc ~> \effItemsSet → do
     itemsSet ← effItemsSet
     pure $ E.series $ E.line itemsSet
 
-chart ∷ ∀ e. Eff (now ∷ NOW, dom ∷ DOM, exception ∷ EXCEPTION, echarts ∷ ET.ECHARTS, random ∷ RANDOM|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "line"
   case mbEl of

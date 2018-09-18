@@ -2,12 +2,12 @@ module ECharts.Event (listenAll, dispatch, on_) where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff, class MonadEff)
+import Effect (Effect)
+import Effect.Class (liftEff, class MonadEffect)
 import Control.Monad.Except (runExcept)
 import Data.Foldable (for_)
-import Data.Foreign (Foreign, readString)
-import Data.Foreign.Index (readProp)
+import Foreign (Foreign, readString)
+import Foreign.Index (readProp)
 import Data.List as L
 import Data.Record.Unsafe as R
 import Data.Tuple (Tuple(..), fst, snd)
@@ -20,14 +20,14 @@ foreign import on_
   ∷ ∀ e
   . Chart
   → String
-  → ( Foreign → Eff (echarts ∷ ECHARTS|e) Unit )
-  → Eff (echarts ∷ ECHARTS|e) Unit
+  → ( Foreign → Effect (echarts ∷ ECHARTS|e) Unit )
+  → Effect (echarts ∷ ECHARTS|e) Unit
 
 listenAll
   ∷ ∀ e m
-  . MonadEff ( echarts ∷ ECHARTS |e ) m
+  . MonadEffect ( echarts ∷ ECHARTS |e ) m
   ⇒ Chart
-  → ( EChartsEvent → Eff (echarts ∷ ECHARTS|e) Unit )
+  → ( EChartsEvent → Effect (echarts ∷ ECHARTS|e) Unit )
   → m Unit
 listenAll chart cb = liftEff $
   for_ eventNames \en → on_ chart en \frn →
@@ -44,11 +44,11 @@ foreign import dispatchAction_
   ∷ ∀ e action
   . action
   → Chart
-  → Eff ( echarts ∷ ECHARTS |e ) Unit
+  → Effect ( echarts ∷ ECHARTS |e ) Unit
 
 dispatch
   ∷ ∀ e m
-  . MonadEff ( echarts ∷ ECHARTS | e ) m
+  . MonadEffect ( echarts ∷ ECHARTS | e ) m
   ⇒ EChartsEvent
   → Chart
   → m Unit

@@ -4,10 +4,8 @@ import Prelude
 
 import Color as C
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Random (RANDOM, random)
-import DOM (DOM)
+import Effect (Effect)
+import Effect.Random (random)
 import DOM.Node.Types (ElementId(..))
 import Data.Array as Arr
 import Data.Maybe (Maybe(..))
@@ -130,7 +128,7 @@ options inp = do
       E.items $ map (ET.numItem <<< _.four) inp
 
 
-genInp ∷ ∀ e. Eff (random ∷ RANDOM|e) (Array OptionInput)
+genInp ∷ Effect (Array OptionInput)
 genInp = F.for (Arr.range 0 10) \i → do
   let label = "Class " <> show i
   one ← random <#> ((_ * 2.0) >>> U.precise 2.0)
@@ -139,7 +137,7 @@ genInp = F.for (Arr.range 0 10) \i → do
   four ← random <#> ((_ + 0.3) >>> U.precise 2.0)
   pure {label, one, two, three, four}
 
-chart ∷ ∀ e. Eff (random ∷ RANDOM, dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "bar"
   case mbEl of

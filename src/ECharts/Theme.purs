@@ -11,7 +11,7 @@ module ECharts.Theme
   ) where
 
 import Data.Either (Either(..))
-import Data.Foreign (Foreign)
+import Foreign (Foreign)
 
 type Theme = Either BuiltInTheme Foreign
 

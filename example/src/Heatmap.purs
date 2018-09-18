@@ -4,9 +4,7 @@ import Prelude
 
 import Color as C
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
-
+import Effect (Effect)
 import Data.Array as A
 import Data.Foldable (traverse_)
 import Data.Int (toNumber)
@@ -14,7 +12,6 @@ import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 
 import ECharts.Chart as EC
@@ -114,7 +111,7 @@ options = do
       $ traverse_ E.addItem values
 
 
-chart ∷ ∀ e. Eff (dom ∷ DOM,  echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "heatmap"
   case mbEl of

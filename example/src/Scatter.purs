@@ -2,15 +2,12 @@ module Scatter where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Random (RANDOM)
+import Effect (Effect)
 import Data.Array (zipWith)
 import Data.Maybe (Maybe(..), maybe)
 import Data.NonEmpty as NE
 import Data.Tuple (Tuple(..), uncurry)
 import Debug.Trace as DT
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 import ECharts.Chart as EC
 import ECharts.Theme as ETheme
@@ -21,7 +18,7 @@ import ECharts.Monad (DSL', interpret)
 import Math (cos, sin, (%))
 import Utils as U
 
-genSinData ∷ ∀ e. Eff (random ∷ RANDOM|e) (Array ET.Item)
+genSinData ∷ Effect (Array ET.Item)
 genSinData = do
   randomIs ← map NE.oneOf $ U.randomArray 10000
   randomXs ← map NE.oneOf $ U.randomArray 10000
@@ -34,7 +31,7 @@ genSinData = do
       $ Tuple i (U.precise 3.0 $ sin i - i * (if i `mod` 2.0 > 0.0 then 0.1 else -0.1) * rnd)
   pure $ map mapfn randoms
 
-genCosData ∷ ∀ e. Eff (random ∷ RANDOM|e) (Array ET.Item)
+genCosData ∷ Effect (Array ET.Item)
 genCosData = do
   randomIs ← map NE.oneOf $ U.randomArray 10000
   randomXs ← map NE.oneOf $ U.randomArray 10000
@@ -99,13 +96,13 @@ options sinData cosData = do
     E.sliderDataZoom E.shown
     E.insideDataZoom $ pure unit
 
-chart ∷ ∀ e. Eff (dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION, random ∷ RANDOM|e) Unit
+chart ∷ Effect Unit
 chart = do
   chart' (ElementId "scatter-1") Nothing
   chart' (ElementId "scatter-2") (Just (ETheme.dark))
   chart' (ElementId "scatter-3") (Just (ETheme.macarons))
 
-chart' ∷ ∀ e. ElementId → Maybe ETheme.Theme → Eff (dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION, random ∷ RANDOM|e) Unit
+chart' ∷ ElementId → Maybe ETheme.Theme → Effect Unit
 chart' id theme = do
   mbEl ← U.getElementById id
   case mbEl of

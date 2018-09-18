@@ -11,8 +11,8 @@
     "ide": "purs ide server"
   },
   "dependencies": {
-    "pulp": "^12.0.1",
-    "purescript": "^0.11.6",
-    "purescript-psa": "^0.5.1"
+    "pulp": "^12.3.0",
+    "purescript": "^0.12.0",
+    "purescript-psa": "^0.7.3"
   }
 }

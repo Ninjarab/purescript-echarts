@@ -1,6 +1,6 @@
 module ECharts.Types.Phantom where
 
-import Control.Monad.Eff (kind Effect)
+import Effect (kind Effect)
 
 -- | Phantom effect for DSL
 foreign import data I ∷ Effect

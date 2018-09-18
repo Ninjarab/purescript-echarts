@@ -2,7 +2,7 @@ module ECharts.Internal where
 
 import Prelude
 
-import Data.Foreign (Foreign)
+import Foreign (Foreign)
 
 foreign import unsafeSetField
   ∷ Foreign → String → Foreign → Foreign

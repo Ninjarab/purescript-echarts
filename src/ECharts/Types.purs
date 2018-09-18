@@ -2,14 +2,14 @@ module ECharts.Types where
 
 import Prelude
 
-import Control.Monad.Eff (kind Effect)
-import Data.Foreign (Foreign, toForeign)
+import Effect (kind Effect)
+import Foreign (Foreign, toForeign)
 import Data.Variant as V
 import Data.StrMap as SM
 
 foreign import data Chart ∷ Type
 
--- | For Eff computation
+-- | For Effect computation
 foreign import data ECHARTS ∷ Effect
 
 data TooltipTrigger

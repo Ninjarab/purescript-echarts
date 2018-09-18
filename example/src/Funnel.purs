@@ -4,15 +4,13 @@ import Prelude
 
 import Color as C
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
+import Effect (Effect)
 
 import Data.Foldable as F
 import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 
 import ECharts.Chart as EC
@@ -114,7 +112,7 @@ options = do
           E.name "five"
           E.value 80.0
 
-chart ∷ ∀ e. Eff (dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "funnel"
   case mbEl of

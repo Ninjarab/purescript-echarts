@@ -2,13 +2,11 @@ module Pie where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
+import Effect (Effect)
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Data.Variant as V
 import Debug.Trace as DT
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 import ECharts.Chart as EC
 import ECharts.Event as EE
@@ -77,7 +75,7 @@ options = do
           E.name "eight"
 
 
-chart ∷ ∀ e. Eff (dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "pie"
   case mbEl of

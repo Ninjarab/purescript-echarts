@@ -4,15 +4,13 @@ import Prelude
 
 import Color as C
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
+import Effect (Effect)
 
 import Data.Foldable as F
 import Data.Maybe (Maybe(..))
 
 import Debug.Trace as DT
 
-import DOM (DOM)
 import DOM.Node.Types (ElementId(..))
 
 import ECharts.Chart as EC
@@ -117,7 +115,7 @@ options = do
       E.buildItems do
         F.for_ dataGZ (E.addItem <<< E.values)
 
-chart ∷ ∀ e. Eff (dom ∷ DOM, echarts ∷ ET.ECHARTS, exception ∷ EXCEPTION|e) Unit
+chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById $ ElementId "radar"
   case mbEl of

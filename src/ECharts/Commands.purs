@@ -8,7 +8,7 @@ import Data.Date (Date, year, month, day)
 import Data.Enum (fromEnum)
 import Data.Traversable as F
 import Data.Tuple (Tuple(..), snd, fst)
-import Data.Foreign (toForeign, Foreign)
+import Foreign (toForeign, Foreign)
 import ECharts.Monad (CommandsT, DSL, set, buildObj, buildSeries, buildArr, get, lastWithKeys, set')
 import ECharts.Types as T
 import ECharts.Types.Phantom (I, R)
