@@ -5,7 +5,7 @@ import Prelude
 import Effect (kind Effect)
 import Foreign (Foreign, toForeign)
 import Data.Variant as V
-import Data.StrMap as SM
+import Data.Set (Set)
 
 foreign import data Chart ∷ Type
 
@@ -182,7 +182,7 @@ coord x y = Coord $ toForeign [ x, y ]
 
 type LegendEventR =
   { name ∷ String
-  , selected ∷ SM.StrMap Boolean
+  , selected ∷ Set Boolean
   }
 
 type DataRangeEventR =

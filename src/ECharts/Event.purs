@@ -9,7 +9,6 @@ import Data.Foldable (for_)
 import Foreign (Foreign, readString)
 import Foreign.Index (readProp)
 import Data.List as L
-import Data.Record.Unsafe as R
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Variant.Internal (RLProxy(..), variantTags, class VariantTags)
 import ECharts.Types (EChartsEvent, EChartsEventR, Chart, ECHARTS)
@@ -78,4 +77,4 @@ dispatch vaction chart =
     s → s
 
   action ∷ ∀ ω. { "type" ∷ String | ω }
-  action = R.unsafeSet "type" actionType $ snd variantPair
+  action = unsafeSet "type" actionType $ snd variantPair
