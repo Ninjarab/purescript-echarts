@@ -16,20 +16,20 @@ import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Data.Either (either)
 import Foreign (Foreign, unsafeToForeign)
-import Web.HTML.HTMLElement (HTMLElement)
+import Web.DOM.Internal.Types (Element)
 import ECharts.Internal (undefinedValue)
 import ECharts.Theme (Theme, builtInThemeName)
 import ECharts.Types (Chart, Option)
 
 foreign import initImpl
   ∷ Foreign
-  → HTMLElement
+  → Element
   → Effect Chart
 
 init
   ∷ ∀ m
   . MonadEffect m
-  ⇒ HTMLElement
+  ⇒ Element
   → m Chart
 init el = liftEffect $ initImpl undefinedValue el
 
@@ -37,7 +37,7 @@ initWithTheme
   ∷ ∀ m
   . MonadEffect m
   ⇒ Theme
-  → HTMLElement
+  → Element
   → m Chart
 initWithTheme theme el =
   liftEffect $ initImpl (either (unsafeToForeign <<< builtInThemeName) unsafeToForeign theme) el

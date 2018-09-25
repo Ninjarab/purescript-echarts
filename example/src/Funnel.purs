@@ -13,13 +13,12 @@ import Debug.Trace as DT
 
 import ECharts.Chart as EC
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 
 import Utils as U
 
-options ∷ DSL' ETP.OptionI
+options ∷ DSL'
 options = do
   E.title do
     E.text "Funnel example"
@@ -114,7 +113,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "funnel"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'funnel' id"
+    Nothing → DT.traceM "There is no element with 'funnel' id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret options) ch

@@ -5,19 +5,15 @@ import Prelude
 import Effect (Effect)
 import Data.Foldable as F
 import Data.Maybe (Maybe(..))
-
 import Debug.Trace as DT
-
-
 import ECharts.Chart as EC
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 
 import Utils as U
 
-options ∷ DSL' ETP.OptionI
+options ∷ DSL'
 options = do
   E.xAxis do
     E.axisType ET.Category
@@ -55,7 +51,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "k"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'k' id"
+    Nothing → DT.traceM "There is no element with 'k' id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret options) ch

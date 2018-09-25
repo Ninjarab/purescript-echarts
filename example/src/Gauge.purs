@@ -11,7 +11,6 @@ import Debug.Trace as DT
 
 import ECharts.Chart as EC
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 
@@ -20,7 +19,7 @@ import Signal.Time (every)
 
 import Utils as U
 
-options ∷ {speed ∷ Number, r ∷ Number, gas ∷ Number, water ∷ Number} → DSL' ETP.OptionI
+options ∷ {speed ∷ Number, r ∷ Number, gas ∷ Number, water ∷ Number} → DSL'
 options obj = do
   E.tooltip $ E.formatterString "{a} <br />{c} {b}"
 
@@ -162,7 +161,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "gauge"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'gauge' id"
+    Nothing → DT.traceM "There is no element with 'gauge' id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret $ options initialVal) ch

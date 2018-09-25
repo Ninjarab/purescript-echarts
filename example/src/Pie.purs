@@ -7,16 +7,14 @@ import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Data.Variant as V
 import Debug.Trace as DT
-
 import ECharts.Chart as EC
 import ECharts.Event as EE
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 import Utils as U
 
-options ∷ DSL' ETP.OptionI
+options ∷ DSL'
 options = do
   E.tooltip do
     E.trigger ET.ItemTrigger
@@ -79,11 +77,11 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "pie"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with pie id"
+    Nothing → DT.traceM "There is no element with pie id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret options) ch
-      EE.listenAll ch DT.traceAnyA
+      EE.listenAll ch DT.traceM
       EE.dispatch
         (V.inj (SProxy ∷ SProxy "pieselected")
            $  { seriesIndex: 1

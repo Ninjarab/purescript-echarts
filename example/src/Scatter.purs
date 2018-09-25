@@ -12,7 +12,6 @@ import Debug.Trace as DT
 import ECharts.Chart as EC
 import ECharts.Theme as ETheme
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 import Math (cos, sin, (%))
@@ -43,7 +42,7 @@ genCosData = do
       $ Tuple i (U.precise 3.0 $ cos i - i * (if i % 2.0 > 0.0 then 0.1 else -0.1) * rnd)
   pure $ map mapfn randoms
 
-options ∷ Array ET.Item → Array ET.Item → DSL' ETP.OptionI
+options ∷ Array ET.Item → Array ET.Item → DSL'
 options sinData cosData = do
   E.title do
     E.text "SIN and COS random scatter"
@@ -98,15 +97,15 @@ options sinData cosData = do
 
 chart ∷ Effect Unit
 chart = do
-  chart' (ElementId "scatter-1") Nothing
-  chart' (ElementId "scatter-2") (Just (ETheme.dark))
-  chart' (ElementId "scatter-3") (Just (ETheme.macarons))
+  chart' "scatter-1" Nothing
+  chart' "scatter-2" (Just (ETheme.dark))
+  chart' "scatter-3" (Just (ETheme.macarons))
 
-chart' ∷ ElementId → Maybe ETheme.Theme → Effect Unit
+chart' ∷ String → Maybe ETheme.Theme → Effect Unit
 chart' id theme = do
   mbEl ← U.getElementById id
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with scatter id"
+    Nothing → DT.traceM "There is no element with scatter id"
     Just el → do
       ch ← maybe EC.init EC.initWithTheme theme el
       sinData ← genSinData

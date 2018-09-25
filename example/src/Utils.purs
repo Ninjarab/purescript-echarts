@@ -18,13 +18,14 @@ import Data.NonEmpty as NE
 import Web.Event.EventTarget (eventListener, addEventListener)
 import Web.HTML (window)
 import Web.HTML.Event.EventTypes (load)
-import Web.HTML.HTMLElement (HTMLElement)
-import Web.DOM.Document (toEventTarget, toNonElementParentNode)
-import Web.HTML.Window (document)
+import Web.DOM.Internal.Types (Element)
+import Web.HTML.HTMLDocument (toNonElementParentNode)
+import Web.HTML.Window (document, toEventTarget)
 import Web.DOM.NonElementParentNode as NEPN
 import Math (round, pow)
+import Effect.Unsafe (unsafePerformEffect)
 
-getElementById ∷ String → Effect (Maybe HTMLElement)
+getElementById ∷ String → Effect (Maybe Element)
 getElementById elementId = do
   win ← window
   doc ← document win
@@ -33,7 +34,7 @@ getElementById elementId = do
 
 onLoad ∷ ∀ a. Effect a → Effect Unit
 onLoad handler =
-  addEventListener load (eventListener (const handler)) false
+  addEventListener load (unsafePerformEffect $ eventListener (const handler)) false
     <<< toEventTarget
     =<< window
 

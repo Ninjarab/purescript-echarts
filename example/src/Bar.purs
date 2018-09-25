@@ -15,10 +15,9 @@ import ECharts.Commands as E
 import ECharts.Event as EE
 import ECharts.Monad (DSL', interpret)
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import Utils as U
 
-itemStyle ∷ DSL' ETP.ItemStyleI
+itemStyle ∷ DSL'
 itemStyle = do
   E.normalItemStyle $ pure unit
   E.emphasisItemStyle do
@@ -36,7 +35,7 @@ type OptionInput =
   , four ∷ Number
   }
 
-options ∷ Array OptionInput → DSL' ETP.OptionI
+options ∷ Array OptionInput → DSL'
 options inp = do
   F.for_ (C.fromHexString "#eee") E.backgroundColor
 
@@ -140,10 +139,10 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "bar"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'bar' id"
+    Nothing → DT.traceM "There is no element with 'bar' id"
     Just el → do
       ch ← EC.init el
       inp ← genInp
       EC.setOption (interpret $ options inp)  ch
-      EC.getOption ch >>= DT.traceAnyA
-      EE.listenAll ch DT.traceAnyA
+      EC.getOption ch >>= DT.traceM
+      EE.listenAll ch DT.traceM

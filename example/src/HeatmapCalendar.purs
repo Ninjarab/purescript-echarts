@@ -8,13 +8,9 @@ import Data.Date as D
 import Data.Enum (toEnum)
 import Data.Foldable (traverse_)
 import Data.Maybe (Maybe(..), fromJust)
-
 import Debug.Trace as DT
-
-
 import ECharts.Chart as EC
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 
@@ -44,14 +40,14 @@ arrValues =
   , [ "2017-02-24", "528" ], [ "2017-02-25", "859" ], [ "2017-02-26", "802" ]
   , [ "2017-02-27", "992" ], [ "2017-02-28", "342" ] ]
 
-values ∷ ∀ i. Array (DSL' (value ∷ ETP.I|i))
+values ∷ Array DSL'
 values = A.catMaybes $ arrValues <#> case _ of
   [x, y] → pure $ E.buildValues do
     E.addStringValue x
     E.addStringValue y
   _ → Nothing
 
-options ∷ DSL' ETP.OptionI
+options ∷ DSL'
 options = do
   E.tooltip do
     E.positionTop
@@ -98,7 +94,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "heatmap-calendar"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'heatmap-calendar' id"
+    Nothing → DT.traceM "There is no element with 'heatmap-calendar' id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret options) ch

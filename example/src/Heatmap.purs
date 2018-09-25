@@ -9,14 +9,9 @@ import Data.Array as A
 import Data.Foldable (traverse_)
 import Data.Int (toNumber)
 import Data.Maybe (Maybe(..))
-
 import Debug.Trace as DT
-
-
-
 import ECharts.Chart as EC
 import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 
@@ -69,7 +64,7 @@ arrValues =
   , [6, 17, 0], [6, 18, 0], [6, 19, 0], [6, 20, 1], [6, 21, 2], [6, 22, 2], [6, 23, 6]
   ]
 
-values ∷ ∀ i. Array (DSL' (value ∷ ETP.I|i))
+values ∷ Array DSL'
 values = A.catMaybes $ arrValues <#> case _ of
   [x, y, z] → pure $ E.buildValues do
     E.addValue $ toNumber y
@@ -79,7 +74,7 @@ values = A.catMaybes $ arrValues <#> case _ of
       else E.addValue $ toNumber z
   _ → Nothing
 
-options ∷ DSL' ETP.OptionI
+options ∷ DSL'
 options = do
   E.tooltip $ pure unit
   E.animationEnabled false
@@ -115,7 +110,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "heatmap"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'heatmap' id"
+    Nothing → DT.traceM "There is no element with 'heatmap' id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret options) ch

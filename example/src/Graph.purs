@@ -5,20 +5,14 @@ import Prelude
 import Effect (Effect)
 
 import Data.Maybe (Maybe(..))
-
 import Debug.Trace as DT
-
-
-
 import ECharts.Chart as EC
-import ECharts.Types as ET
-import ECharts.Types.Phantom as ETP
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
 
 import Utils as U
 
-options ∷ DSL' ETP.OptionI
+options ∷ DSL'
 options = do
   E.title $ E.text "Graph"
   E.tooltip $ pure unit
@@ -91,7 +85,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "graph"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with 'graph' id"
+    Nothing → DT.traceM "There is no element with 'graph' id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret options) ch

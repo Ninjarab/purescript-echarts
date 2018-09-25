@@ -22,15 +22,13 @@ import ECharts.Chart as EC
 import ECharts.Types as ET
 import ECharts.Commands as E
 import ECharts.Monad (DSL', interpret)
-import ECharts.Types.Phantom (I)
-import ECharts.Types.Phantom as ETP
 
 import Signal (Signal, runSignal, (~>), foldp)
 import Signal.Time (every)
 
 import Utils as U
 
-startOptions ∷ DSL' ETP.OptionI
+startOptions ∷ DSL'
 startOptions = do
   E.useUTC true
   E.title do
@@ -57,11 +55,10 @@ startOptions = do
 type Accum =
   { dt ∷ D.DateTime
   , value ∷ Number
-  , values ∷ Array (DSL' ETP.ItemI)
+  , values ∷ Array DSL'
   }
 
-dataStream
-  ∷ ∀ i. Accum → Signal (Effect (DSL' (items ∷ I|i)))
+dataStream ∷ Accum → Signal (Effect DSL')
 dataStream start =
   accumStream ~> map (void <<< E.itemsDSL <<< _.values)
   where
@@ -74,17 +71,17 @@ dataStream start =
     let
       oneDay = Milliseconds (24.0 * 3600.0 * 1000.0)
       newTime = fromMaybe acc.dt $ D.adjust oneDay acc.dt
-      newTimeLabel = either (const $ "Incorrect date") id $ FDT.formatDateTime "YYYY-MM-DD" newTime
+      newTimeLabel = either (const $ "Incorrect date") identity $ FDT.formatDateTime "YYYY-MM-DD" newTime
       newValue = acc.value + (ran * 21.0 - 10.0)
 
-      newItem ∷ DSL' ETP.ItemI
+      newItem ∷ DSL'
       newItem = do
         E.name newTimeLabel
         E.valuePair newTimeLabel newValue
 
     pure { value: newValue, dt: newTime, values: [newItem] <> acc.values }
 
-optStream ∷ Accum → Signal (Effect (DSL' ETP.OptionI))
+optStream ∷ Accum → Signal (Effect DSL')
 optStream acc =
   dataStream acc ~> \effItemsSet → do
     itemsSet ← effItemsSet
@@ -94,7 +91,7 @@ chart ∷ Effect Unit
 chart = do
   mbEl ← U.getElementById "line"
   case mbEl of
-    Nothing → DT.traceAnyA "There is no element with line id"
+    Nothing → DT.traceM "There is no element with line id"
     Just el → do
       ch ← EC.init el
       EC.setOption (interpret startOptions) ch

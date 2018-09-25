@@ -4,8 +4,6 @@ import Prelude
 
 import Effect (Effect)
 
-import ECharts.Types as ET
-
 import Line as Line
 import Scatter as Scatter
 import Pie as Pie
