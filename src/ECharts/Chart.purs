@@ -13,13 +13,13 @@ module ECharts.Chart
 import Prelude
 
 import Effect (Effect)
-import Effect.Class (class MonadEffect, liftEff)
+import Effect.Class (class MonadEffect, liftEffect)
 import Data.Either (either)
-import Foreign (Foreign, toForeign)
+import Foreign (Foreign, unsafeToForeign)
 import Web.HTML.HTMLElement (HTMLElement)
 import ECharts.Internal (undefinedValue)
 import ECharts.Theme (Theme, builtInThemeName)
-import ECharts.Types (Chart, ECHARTS, Option)
+import ECharts.Types (Chart, Option)
 
 foreign import initImpl
   ∷ Foreign
@@ -31,7 +31,7 @@ init
   . MonadEffect m
   ⇒ HTMLElement
   → m Chart
-init el = liftEff $ initImpl undefinedValue el
+init el = liftEffect $ initImpl undefinedValue el
 
 initWithTheme
   ∷ ∀ m
@@ -40,7 +40,7 @@ initWithTheme
   → HTMLElement
   → m Chart
 initWithTheme theme el =
-  liftEff $ initImpl (either (toForeign <<< builtInThemeName) toForeign theme) el
+  liftEffect $ initImpl (either (unsafeToForeign <<< builtInThemeName) unsafeToForeign theme) el
 
 foreign import registerTheme
   ∷ String
@@ -56,7 +56,7 @@ setOption
   ⇒ Option
   → Chart
   → m Unit
-setOption opts chart = liftEff $ setOptionImpl opts chart
+setOption opts chart = liftEffect $ setOptionImpl opts chart
 
 foreign import resetOptionImpl ∷ Option → Chart → Effect Unit
 
@@ -66,7 +66,7 @@ resetOption
   ⇒ Option
   → Chart
   → m Unit
-resetOption opts chart = liftEff $ resetOptionImpl opts chart
+resetOption opts chart = liftEffect $ resetOptionImpl opts chart
 
 foreign import resizeImpl ∷ Chart → Effect Unit
 
@@ -75,7 +75,7 @@ resize
   . MonadEffect m
   ⇒ Chart
   → m Unit
-resize chart = liftEff $ resizeImpl chart
+resize chart = liftEffect $ resizeImpl chart
 
 
 foreign import clearImpl ∷ Chart → Effect Unit
@@ -85,7 +85,7 @@ clear
   . MonadEffect m
   ⇒ Chart
   → m Unit
-clear chart = liftEff $ clearImpl chart
+clear chart = liftEffect $ clearImpl chart
 
 foreign import disposeImpl ∷ Chart → Effect Unit
 
@@ -94,7 +94,7 @@ dispose
   . MonadEffect m
   ⇒ Chart
   → m Unit
-dispose chart = liftEff $ disposeImpl chart
+dispose chart = liftEffect $ disposeImpl chart
 
 foreign import getOptionImpl ∷ Chart → Effect Foreign
 
@@ -103,4 +103,4 @@ getOption
   . MonadEffect m
   ⇒ Chart
   → m Foreign
-getOption chart = liftEff $ getOptionImpl chart
+getOption chart = liftEffect $ getOptionImpl chart

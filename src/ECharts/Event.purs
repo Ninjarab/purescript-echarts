@@ -3,7 +3,7 @@ module ECharts.Event (listenAll, dispatch, on_) where
 import Prelude
 
 import Effect (Effect)
-import Effect.Class (liftEff, class MonadEffect)
+import Effect.Class (liftEffect, class MonadEffect)
 import Control.Monad.Except (runExcept)
 import Data.Foldable (for_)
 import Foreign (Foreign, readString)
@@ -11,24 +11,24 @@ import Foreign.Index (readProp)
 import Data.List as L
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Variant.Internal (RLProxy(..), variantTags, class VariantTags)
-import ECharts.Types (EChartsEvent, EChartsEventR, Chart, ECHARTS)
+import ECharts.Types (EChartsEvent, EChartsEventR, Chart)
 import Type.Row (class RowToList)
 import Unsafe.Coerce (unsafeCoerce)
+import Record.Unsafe (unsafeSet)
 
 foreign import on_
-  ∷ ∀ e
-  . Chart
+  ∷ Chart
   → String
-  → ( Foreign → Effect (echarts ∷ ECHARTS|e) Unit )
-  → Effect (echarts ∷ ECHARTS|e) Unit
+  → ( Foreign → Effect Unit )
+  → Effect Unit
 
 listenAll
-  ∷ ∀ e m
-  . MonadEffect ( echarts ∷ ECHARTS |e ) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ Chart
-  → ( EChartsEvent → Effect (echarts ∷ ECHARTS|e) Unit )
+  → ( EChartsEvent → Effect Unit )
   → m Unit
-listenAll chart cb = liftEff $
+listenAll chart cb = liftEffect $
   for_ eventNames \en → on_ chart en \frn →
     for_ (runExcept $ readProp "type" frn >>= readString) \tp →
       when (tp == en) $ cb $ toEChartsEvent $ Tuple tp frn
@@ -40,19 +40,19 @@ listenAll chart cb = liftEff $
   toEChartsEvent = unsafeCoerce
 
 foreign import dispatchAction_
-  ∷ ∀ e action
+  ∷ ∀ action
   . action
   → Chart
-  → Effect ( echarts ∷ ECHARTS |e ) Unit
+  → Effect Unit
 
 dispatch
-  ∷ ∀ e m
-  . MonadEffect ( echarts ∷ ECHARTS | e ) m
+  ∷ ∀ m
+  . MonadEffect m
   ⇒ EChartsEvent
   → Chart
   → m Unit
 dispatch vaction chart =
-  liftEff $ dispatchAction_ action chart
+  liftEffect $ dispatchAction_ action chart
   where
   variantPair ∷ Tuple String {}
   variantPair = unsafeCoerce vaction

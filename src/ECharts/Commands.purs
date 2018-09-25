@@ -8,1163 +8,1158 @@ import Data.Date (Date, year, month, day)
 import Data.Enum (fromEnum)
 import Data.Traversable as F
 import Data.Tuple (Tuple(..), snd, fst)
-import Foreign (toForeign, Foreign)
+import Foreign (unsafeToForeign, Foreign)
 import ECharts.Monad (CommandsT, DSL, set, buildObj, buildSeries, buildArr, get, lastWithKeys, set')
 import ECharts.Types as T
-import ECharts.Types.Phantom (I, R)
-import ECharts.Types.Phantom as TP
 import ECharts.Internal (undefinedValue)
 
-series ∷ ∀ i m. Monad m ⇒ CommandsT TP.SeriesI m ~> CommandsT (series ∷ I|i) m
+series ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 series a = set "series" =<< buildSeries a
 
-tooltip ∷ ∀ i m. Monad m ⇒ CommandsT TP.TooltipI m ~> CommandsT (tooltip ∷ I|i) m
+tooltip ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 tooltip a = set "tooltip" =<< buildObj a
 
-grids ∷ ∀ i m. Monad m ⇒ CommandsT TP.GridsI m ~> CommandsT (grid ∷ I|i) m
+grids ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 grids = set "grid" <=< buildArr
 
-grid ∷ ∀ i m. Monad m ⇒ CommandsT TP.GridI m ~> CommandsT (grid ∷ I|i) m
+grid ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 grid a = set "grid" =<< buildObj a
 
-polar ∷ ∀ i m. Monad m ⇒ CommandsT TP.PolarI m ~> CommandsT (polar ∷ I|i) m
+polar ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 polar a = set "polar" =<< buildObj a
 
-legend ∷ ∀ i m. Monad m ⇒ CommandsT TP.LegendI m ~> CommandsT (legend ∷ I|i) m
+legend ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 legend a = set "legend" =<< buildObj a
 
-xAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.XAxisI m ~> CommandsT (xAxis ∷ I|i) m
+xAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 xAxis a = set "xAxis" =<< buildObj a
 
-yAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.YAxisI m ~> CommandsT (yAxis ∷ I|i) m
+yAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 yAxis a = set "yAxis" =<< buildObj a
 
-radiusAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.RadiusAxisI m ~> CommandsT (radiusAxis ∷ I|i) m
+radiusAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 radiusAxis a = set "radiusAxis" =<< buildObj a
 
-angleAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.AngleAxisI m ~> CommandsT (angleAxis ∷ I|i) m
+angleAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 angleAxis a = set "angleAxis" =<< buildObj a
 
-color ∷ ∀ i m. Monad m ⇒ C.Color → DSL (color ∷ I|i) m
-color a = set' "color" $ toForeign $ C.toHexString a
+color ∷ ∀ m. Monad m ⇒ C.Color → DSL m
+color a = set' "color" $ unsafeToForeign $ C.toHexString a
 
-colors ∷ ∀ i f m. Monad m ⇒ F.Foldable f ⇒ f C.Color → DSL (color ∷ I|i) m
-colors a = set' "color" $ toForeign $ F.foldMap (Arr.singleton <<< C.toHexString) a
+colors ∷ ∀ f m. Monad m ⇒ F.Foldable f ⇒ f C.Color → DSL m
+colors a = set' "color" $ unsafeToForeign $ F.foldMap (Arr.singleton <<< C.toHexString) a
 
-rgbaColors ∷ ∀ i f m. Monad m ⇒ F.Foldable f ⇒ f C.Color → DSL (color ∷ I|i) m
-rgbaColors a = set' "color" $ toForeign $ F.foldMap (Arr.singleton <<< C.cssStringRGBA) a
+rgbaColors ∷ ∀ f m. Monad m ⇒ F.Foldable f ⇒ f C.Color → DSL m
+rgbaColors a = set' "color" $ unsafeToForeign $ F.foldMap (Arr.singleton <<< C.cssStringRGBA) a
 
-rgbaColor ∷ ∀ i m. Monad m ⇒ C.Color → DSL (color ∷ I|i) m
-rgbaColor a = set' "color" $ toForeign $ C.cssStringRGBA a
+rgbaColor ∷ ∀ m. Monad m ⇒ C.Color → DSL m
+rgbaColor a = set' "color" $ unsafeToForeign $ C.cssStringRGBA a
 
-backgroundColor ∷ ∀ i m. Monad m ⇒ C.Color → DSL (backgroundColor ∷ I|i) m
-backgroundColor a = set' "backgroundColor" $ toForeign $ C.toHexString a
+backgroundColor ∷ ∀ m. Monad m ⇒ C.Color → DSL m
+backgroundColor a = set' "backgroundColor" $ unsafeToForeign $ C.toHexString a
 
-visible ∷ ∀ i m. Monad m ⇒ Boolean → DSL (show ∷ I|i) m
-visible a = set' "show" $ toForeign a
+visible ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+visible a = set' "show" $ unsafeToForeign a
 
-shown ∷ ∀ i m. Monad m ⇒ DSL (show ∷ I|i) m
+shown ∷ ∀ m. Monad m ⇒ DSL m
 shown = visible true
 
-hidden ∷ ∀ i m. Monad m ⇒ DSL (show ∷ I|i) m
+hidden ∷ ∀ m. Monad m ⇒ DSL m
 hidden = visible false
 
-showTitle ∷ ∀ i m. Monad m ⇒ Boolean → DSL (showTitle ∷ I|i) m
-showTitle a = set' "showTitle" $ toForeign a
+showTitle ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+showTitle a = set' "showTitle" $ unsafeToForeign a
 
-textStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.TextStyleI m ~> CommandsT (textStyle ∷ I|i) m
+textStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 textStyle a = set "textStyle" =<< buildObj a
 
-subtextStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.TextStyleI m ~> CommandsT (subtextStyle ∷ I|i) m
+subtextStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 subtextStyle a = set "subtextStyle" =<< buildObj a
 
-left ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (left ∷ I|i) m
+left ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 left a = set' "left" $ T.pixelOrPercentToForeign a
 
-right ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (right ∷ I|i) m
+right ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 right a = set' "right" $ T.pixelOrPercentToForeign a
 
-top ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (top ∷ I|i) m
+top ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 top a = set' "top" $ T.pixelOrPercentToForeign a
 
-topTop ∷ ∀ i m. Monad m ⇒ DSL (top ∷ I|i) m
-topTop = set' "top" $ toForeign "top"
+topTop ∷ ∀ m. Monad m ⇒ DSL m
+topTop = set' "top" $ unsafeToForeign "top"
 
-topMiddle ∷ ∀ i m. Monad m ⇒ DSL (top ∷ I|i) m
-topMiddle = set' "top" $ toForeign "middle"
+topMiddle ∷ ∀ m. Monad m ⇒ DSL m
+topMiddle = set' "top" $ unsafeToForeign "middle"
 
-topBottom ∷ ∀ i m. Monad m ⇒ DSL (top ∷ I|i) m
-topBottom = set' "top" $ toForeign "bottom"
+topBottom ∷ ∀ m. Monad m ⇒ DSL m
+topBottom = set' "top" $ unsafeToForeign "bottom"
 
-bottom ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (bottom ∷ I|i) m
+bottom ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 bottom a = set' "bottom" $ T.pixelOrPercentToForeign a
 
-bottomPx ∷ ∀ i m. Monad m ⇒ Int → DSL (bottom ∷ I|i) m
-bottomPx = set' "bottom" <<< toForeign
+bottomPx ∷ ∀ m. Monad m ⇒ Int → DSL m
+bottomPx = set' "bottom" <<< unsafeToForeign
 
-orient ∷ ∀ i m. Monad m ⇒ T.Orient → DSL (orient ∷ I|i) m
+orient ∷ ∀ m. Monad m ⇒ T.Orient → DSL m
 orient a = set' "orient" $ T.orientToForeign a
 
-items ∷ ∀ i f m. Monad m ⇒ F.Foldable f ⇒ f T.Item → DSL (items ∷ I|i) m
-items a = set' "data" $ toForeign $ F.foldMap (Arr.singleton <<< toForeign) a
+items ∷ ∀ f m. Monad m ⇒ F.Foldable f ⇒ f T.Item → DSL m
+items a = set' "data" $ unsafeToForeign $ F.foldMap (Arr.singleton <<< unsafeToForeign) a
 
 itemsDSL
-  ∷ ∀ i f m a
+  ∷ ∀ f m a
   . Monad m
   ⇒ F.Traversable f
-  ⇒ f (CommandsT TP.ItemI m a)
-  → CommandsT (items ∷ I|i) m (f a)
+  ⇒ f (CommandsT m a)
+  → CommandsT m (f a)
 itemsDSL a = do
  is ← F.for a $ buildObj
- set' "data" $ toForeign $ F.foldMap (Arr.singleton <<< snd) is
+ set' "data" $ unsafeToForeign $ F.foldMap (Arr.singleton <<< snd) is
  pure $ map fst is
 
 
-addItem ∷ ∀ i m. Monad m ⇒ CommandsT TP.ItemI m ~> CommandsT (item ∷ I|i) m
+addItem ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 addItem = set "" <=< buildObj
 
-buildItems ∷ ∀ i m. Monad m ⇒ CommandsT TP.ItemsI m ~> CommandsT (items ∷ I|i) m
+buildItems ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildItems = set "data" <=< buildArr
 
-buildMarkItems ∷ ∀ i m. Monad m ⇒ CommandsT TP.ItemsI m ~> CommandsT (markItems ∷ I|i) m
+buildMarkItems ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildMarkItems is = do
   Tuple a obj ← buildArr is
-  set' "data" $ toForeign obj
+  set' "data" $ unsafeToForeign obj
   pure a
 
-calendarIndex ∷ ∀ i m. Monad m ⇒ Int → DSL (calendarIndex ∷ I|i) m
-calendarIndex i = set' "calendarIndex" $ toForeign i
+calendarIndex ∷ ∀ m. Monad m ⇒ Int → DSL m
+calendarIndex i = set' "calendarIndex" $ unsafeToForeign i
 
-visibleContent ∷ ∀ i m. Monad m ⇒ Boolean → DSL (showContent ∷ I|i) m
-visibleContent a = set' "showContent" $ toForeign a
+visibleContent ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+visibleContent a = set' "showContent" $ unsafeToForeign a
 
-showContent ∷ ∀ i m. Monad m ⇒ DSL (showContent ∷ I|i) m
+showContent ∷ ∀ m. Monad m ⇒ DSL m
 showContent = visibleContent true
 
-hideContent ∷ ∀ i m. Monad m ⇒ DSL (showContent ∷ I|i) m
+hideContent ∷ ∀ m. Monad m ⇒ DSL m
 hideContent = visibleContent false
 
-alwaysShowContent ∷ ∀ i m. Monad m ⇒ Boolean → DSL (alwaysShowContent ∷ I|i) m
-alwaysShowContent a = set' "alwaysShowContent" $ toForeign a
+alwaysShowContent ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+alwaysShowContent a = set' "alwaysShowContent" $ unsafeToForeign a
 
-trigger ∷ ∀ i m. Monad m ⇒ T.TooltipTrigger → DSL (trigger ∷ I|i) m
+trigger ∷ ∀ m. Monad m ⇒ T.TooltipTrigger → DSL m
 trigger a = set' "trigger" $ T.tooltipTriggerToForeign a
 
-triggerOnMouseMove ∷ ∀ i m. Monad m ⇒ DSL (triggerOn ∷ I|i) m
-triggerOnMouseMove = set' "triggerOn" $ toForeign "mousemove"
+triggerOnMouseMove ∷ ∀ m. Monad m ⇒ DSL m
+triggerOnMouseMove = set' "triggerOn" $ unsafeToForeign "mousemove"
 
-triggerOnClick ∷ ∀ i m. Monad m ⇒ DSL (triggerOn ∷ I|i) m
-triggerOnClick = set' "triggerOn" $ toForeign "click"
+triggerOnClick ∷ ∀ m. Monad m ⇒ DSL m
+triggerOnClick = set' "triggerOn" $ unsafeToForeign "click"
 
-triggerAxis ∷ ∀ i m. Monad m ⇒ DSL (trigger ∷ I|i) m
-triggerAxis = set' "trigger" $ toForeign "axis"
+triggerAxis ∷ ∀ m. Monad m ⇒ DSL m
+triggerAxis = set' "trigger" $ unsafeToForeign "axis"
 
-triggerItem ∷ ∀ i m. Monad m ⇒ DSL (trigger ∷ I|i) m
-triggerItem = set' "trigger" $ toForeign "item"
+triggerItem ∷ ∀ m. Monad m ⇒ DSL m
+triggerItem = set' "trigger" $ unsafeToForeign "item"
 
-triggerEvent ∷ ∀ i m. Monad m ⇒ Boolean → DSL (trigger ∷ I|i) m
-triggerEvent a = set' "triggerEvent" $ toForeign a
+triggerEvent ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+triggerEvent a = set' "triggerEvent" $ unsafeToForeign a
 
-pie ∷ ∀ i m. Monad m ⇒ CommandsT TP.PieSeriesI m ~> CommandsT (pie ∷ I|i) m
+pie ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 pie = set "pie" <=< buildObj
 
-line ∷ ∀ i m. Monad m ⇒ CommandsT TP.LineSeriesI m ~> CommandsT (line ∷ I|i) m
+line ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 line = set "line" <=< buildObj
 
-bar ∷ ∀ i m. Monad m ⇒ CommandsT TP.BarSeriesI m ~> CommandsT (bar ∷ I|i) m
+bar ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 bar = set "bar" <=< buildObj
 
-scatter ∷ ∀ i m. Monad m ⇒ CommandsT TP.ScatterI m ~> CommandsT (scatter ∷ I|i) m
+scatter ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 scatter = set "scatter" <=< buildObj
 
-effectScatter ∷ ∀ i m. Monad m ⇒ CommandsT TP.EffectScatterI m ~> CommandsT (effectScatter ∷ I|i) m
+effectScatter ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 effectScatter = set "effectScatter" <=< buildObj
 
-treeMap ∷ ∀ i m. Monad m ⇒ CommandsT TP.TreeMapI m ~> CommandsT (treeMap ∷ I|i) m
+treeMap ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 treeMap = set "treemap" <=< buildObj
 
-boxPlot ∷ ∀ i m. Monad m ⇒ CommandsT TP.BoxPlotI m ~> CommandsT (boxPlot ∷ I|i) m
+boxPlot ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 boxPlot = set "boxplot" <=< buildObj
 
-candlestick ∷ ∀ i m. Monad m ⇒ CommandsT TP.CandlestickI m ~> CommandsT (candlestick ∷ I|i) m
+candlestick ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 candlestick = set "candlestick" <=< buildObj
 
-heatMap ∷ ∀ i m. Monad m ⇒ CommandsT TP.HeatMapI m ~> CommandsT (heatMap ∷ I|i) m
+heatMap ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 heatMap = set "heatmap" <=< buildObj
 
-calendarSpec ∷ ∀ i m. Monad m ⇒ CommandsT TP.CalendarSpecI m ~> CommandsT (calendarSpec ∷ I|i) m
+calendarSpec ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 calendarSpec = set "calendar" <=< buildObj
 
-map_ ∷ ∀ i m. Monad m ⇒ CommandsT TP.MapI m ~> CommandsT (map ∷ I|i) m
+map_ ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 map_ = set "map" <=< buildObj
 
-parallels ∷ ∀ i m. Monad m ⇒ CommandsT TP.ParallelsI m ~> CommandsT (parallel ∷ I|i) m
+parallels ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 parallels = set "parallel" <=< buildArr
 
-parallel ∷ ∀ i m. Monad m ⇒ CommandsT TP.ParallelI m ~> CommandsT (parallel ∷ I|i) m
+parallel ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 parallel = set "parallel" <=< buildObj
 
-lines ∷ ∀ i m. Monad m ⇒ CommandsT TP.LinesI m ~> CommandsT (lines ∷ I|i) m
+lines ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 lines = set "lines" <=< buildObj
 
-graph ∷ ∀ i m. Monad m ⇒ CommandsT TP.GraphI m ~> CommandsT (graph ∷ I|i) m
+graph ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 graph = set "graph" <=< buildObj
 
-sankey ∷ ∀ i m. Monad m ⇒ CommandsT TP.SankeyI m ~> CommandsT (sankey ∷ I|i) m
+sankey ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 sankey = set "sankey" <=< buildObj
 
-funnel ∷ ∀ i m. Monad m ⇒ CommandsT TP.FunnelI m ~> CommandsT (funnel ∷ I|i) m
+funnel ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 funnel = set "funnel" <=< buildObj
 
-parallelSeries ∷ ∀ i m. Monad m ⇒ CommandsT TP.ParallelSeriesI m ~> CommandsT (parallelSeries ∷ I|i) m
+parallelSeries ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 parallelSeries = set "parallel" <=< buildObj
 
-gauge ∷ ∀ i m. Monad m ⇒ CommandsT TP.GaugeI m ~> CommandsT (gauge ∷ I|i) m
+gauge ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 gauge = set "gauge" <=< buildObj
 
-radarSeries ∷ ∀ i m. Monad m ⇒ CommandsT TP.RadarSeriesI m ~> CommandsT (radarSeries ∷ I|i) m
+radarSeries ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 radarSeries = set "radar" <=< buildObj
 
-xAxisIndex ∷ ∀ i m. Monad m ⇒ Int → DSL (xAxisIndex ∷ I|i) m
-xAxisIndex a = set' "xAxisIndex" $ toForeign a
+xAxisIndex ∷ ∀ m. Monad m ⇒ Int → DSL m
+xAxisIndex a = set' "xAxisIndex" $ unsafeToForeign a
 
-yAxisIndex ∷ ∀ i m. Monad m ⇒ Int → DSL (yAxisIndex ∷ I|i) m
-yAxisIndex a = set' "yAxisIndex" $ toForeign a
+yAxisIndex ∷ ∀ m. Monad m ⇒ Int → DSL m
+yAxisIndex a = set' "yAxisIndex" $ unsafeToForeign a
 
-xAxisAllIndices ∷ ∀ i m. Monad m ⇒ DSL (xAxisIndex ∷ I|i) m
-xAxisAllIndices = set' "xAxisIndex" $ toForeign "all"
+xAxisAllIndices ∷ ∀ m. Monad m ⇒ DSL m
+xAxisAllIndices = set' "xAxisIndex" $ unsafeToForeign "all"
 
-yAxisAllIndices ∷ ∀ i m. Monad m ⇒ DSL (yAxisIndex ∷ I|i) m
-yAxisAllIndices = set' "yAxisIndex" $ toForeign "all"
+yAxisAllIndices ∷ ∀ m. Monad m ⇒ DSL m
+yAxisAllIndices = set' "yAxisIndex" $ unsafeToForeign "all"
 
-polarIndex ∷ ∀ i m. Monad m ⇒ Int → DSL (polarIndex ∷ I|i) m
-polarIndex a = set' "polarIndex" $ toForeign a
+polarIndex ∷ ∀ m. Monad m ⇒ Int → DSL m
+polarIndex a = set' "polarIndex" $ unsafeToForeign a
 
-symbol ∷ ∀ i m. Monad m ⇒ T.Symbol → DSL (symbol ∷ I|i) m
+symbol ∷ ∀ m. Monad m ⇒ T.Symbol → DSL m
 symbol a = set' "symbol" $ T.symbolToForeign a
 
-symbolSize ∷ ∀ i m. Monad m ⇒ Int → DSL (symbolSize ∷ I|i) m
-symbolSize a = set' "symbolSize" $ toForeign a
+symbolSize ∷ ∀ m. Monad m ⇒ Int → DSL m
+symbolSize a = set' "symbolSize" $ unsafeToForeign a
 
-smooth ∷ ∀ i m. Monad m ⇒ Boolean → DSL (smooth ∷ I|i) m
-smooth a = set' "smooth" $ toForeign a
+smooth ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+smooth a = set' "smooth" $ unsafeToForeign a
 
-name ∷ ∀ i m. Monad m ⇒ String → DSL (name ∷ I|i) m
-name a = set' "name" $ toForeign a
+name ∷ ∀ m. Monad m ⇒ String → DSL m
+name a = set' "name" $ unsafeToForeign a
 
-stack ∷ ∀ i m. Monad m ⇒ String → DSL (stack ∷ I|i) m
-stack a = set' "stack" $ toForeign a
+stack ∷ ∀ m. Monad m ⇒ String → DSL m
+stack a = set' "stack" $ unsafeToForeign a
 
-center ∷ ∀ i m. Monad m ⇒ T.Point → DSL (center ∷ I|i) m
+center ∷ ∀ m. Monad m ⇒ T.Point → DSL m
 center a = set' "center" $ T.pointToForeign a
 
-radius ∷ ∀ i m. Monad m ⇒ T.Radius → DSL (radius ∷ I|i) m
+radius ∷ ∀ m. Monad m ⇒ T.Radius → DSL m
 radius a = set' "radius" $ T.radiusToForeign a
 
-singleValueRadius ∷ ∀ i m. Monad m ⇒ T.SingleValueRadius → DSL (radius ∷ I|i) m
+singleValueRadius ∷ ∀ m. Monad m ⇒ T.SingleValueRadius → DSL m
 singleValueRadius a = set' "radius" $ T.singleValueRadiusToForeign a
 
-startAngle ∷ ∀ i m. Monad m ⇒ Number → DSL (startAngle ∷ I|i) m
-startAngle a = set' "startAngle" $ toForeign a
+startAngle ∷ ∀ m. Monad m ⇒ Number → DSL m
+startAngle a = set' "startAngle" $ unsafeToForeign a
 
-axisTick ∷ ∀ i m. Monad m ⇒ CommandsT TP.AxisTickI m ~> CommandsT (axisTick ∷ I|i) m
+axisTick ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 axisTick = set "axisTick" <=< buildObj
 
-axisLabel ∷ ∀ i m. Monad m ⇒ CommandsT TP.AxisLabelI m ~> CommandsT (axisLabel ∷ I|i) m
+axisLabel ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 axisLabel = set "axisLabel" <=< buildObj
 
-axisType ∷ ∀ i m. Monad m ⇒ T.AxisType → DSL (axisType ∷ I|i) m
+axisType ∷ ∀ m. Monad m ⇒ T.AxisType → DSL m
 axisType a = set' "type" $ T.axisTypeToForeign a
 
-value ∷ ∀ i m. Monad m ⇒ Number → DSL (value ∷ I|i) m
-value a = set' "value" $ toForeign a
+value ∷ ∀ m. Monad m ⇒ Number → DSL m
+value a = set' "value" $ unsafeToForeign a
 
-values ∷ ∀ i f m. Monad m ⇒ F.Foldable f ⇒ f Number → DSL (value ∷ I|i) m
-values = set' "value" <<< toForeign <<< F.foldMap Arr.singleton
+values ∷ ∀ f m. Monad m ⇒ F.Foldable f ⇒ f Number → DSL m
+values = set' "value" <<< unsafeToForeign <<< F.foldMap Arr.singleton
 
-buildValues ∷ ∀ i m. Monad m ⇒ CommandsT TP.ValuesI m ~> CommandsT (value ∷ I|i) m
+buildValues ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildValues = set "value" <=< buildArr
 
-addValue ∷ ∀ i m. Monad m ⇒ Number → DSL (addValue ∷ I|i) m
-addValue = set' "" <<< toForeign
+addValue ∷ ∀ m. Monad m ⇒ Number → DSL m
+addValue = set' "" <<< unsafeToForeign
 
-addStringValue ∷ ∀ i m. Monad m ⇒ String → DSL (addValue ∷ I|i) m
-addStringValue = set' "" <<< toForeign
+addStringValue ∷ ∀ m. Monad m ⇒ String → DSL m
+addStringValue = set' "" <<< unsafeToForeign
 
-autoValue ∷ ∀ i m. Monad m ⇒ DSL (addValue ∷ I|i) m
-autoValue = set' "" $ toForeign "auto"
+autoValue ∷ ∀ m. Monad m ⇒ DSL m
+autoValue = set' "" $ unsafeToForeign "auto"
 
-buildNames ∷ ∀ i m. Monad m ⇒ CommandsT TP.NamesI m ~> CommandsT (name ∷ I|i) m
+buildNames ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildNames = set "name" <=< buildArr
 
-addName ∷ ∀ i m. Monad m ⇒ String → DSL (addName ∷ I|i) m
-addName = set' "" <<< toForeign
+addName ∷ ∀ m. Monad m ⇒ String → DSL m
+addName = set' "" <<< unsafeToForeign
 
-missingValue ∷ ∀ i m. Monad m ⇒ DSL (addValue ∷ I|i) m
+missingValue ∷ ∀ m. Monad m ⇒ DSL m
 missingValue = set' "" undefinedValue
 
-missingName ∷ ∀ i m. Monad m ⇒ DSL (addName ∷ I|i) m
+missingName ∷ ∀ m. Monad m ⇒ DSL m
 missingName = set' "" undefinedValue
 
-valuePair ∷ ∀ i m. Monad m ⇒ String → Number → DSL (value ∷ I|i) m
-valuePair a b = set' "value" $ toForeign [toForeign a, toForeign b]
+valuePair ∷ ∀ m. Monad m ⇒ String → Number → DSL m
+valuePair a b = set' "value" $ unsafeToForeign [unsafeToForeign a, unsafeToForeign b]
 
-titles ∷ ∀ i m. Monad m ⇒ CommandsT TP.TitlesI m ~> CommandsT (title ∷ I|i) m
+titles ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 titles = set "title" <=< buildArr
 
-title ∷ ∀ i m. Monad m ⇒ CommandsT TP.TitleI m ~> CommandsT (title ∷ I|i) m
+title ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 title = set "title" <=< buildObj
 
-text ∷ ∀ i m. Monad m ⇒ String → DSL (text ∷ I|i) m
-text a = set' "text" $ toForeign a
+text ∷ ∀ m. Monad m ⇒ String → DSL m
+text a = set' "text" $ unsafeToForeign a
 
-showDelay ∷ ∀ i m. Monad m ⇒ Number → DSL (showDelay ∷ I|i) m
-showDelay a = set' "showDelay" $ toForeign a
+showDelay ∷ ∀ m. Monad m ⇒ Number → DSL m
+showDelay a = set' "showDelay" $ unsafeToForeign a
 
-hideDelay ∷ ∀ i m. Monad m ⇒ Number → DSL (hideDelay ∷ I|i) m
-hideDelay a = set' "hideDelay" $ toForeign a
+hideDelay ∷ ∀ m. Monad m ⇒ Number → DSL m
+hideDelay a = set' "hideDelay" $ unsafeToForeign a
 
-pointerType ∷ ∀ i m. Monad m ⇒ T.PointerType → DSL (pointerType ∷ I|i) m
+pointerType ∷ ∀ m. Monad m ⇒ T.PointerType → DSL m
 pointerType a = set' "type" $ T.pointerTypeToForeign a
 
-zlevel ∷ ∀ i m. Monad m ⇒ Int → DSL (zlevel ∷ I|i) m
-zlevel a = set' "zlevel" $ toForeign a
+zlevel ∷ ∀ m. Monad m ⇒ Int → DSL m
+zlevel a = set' "zlevel" $ unsafeToForeign a
 
-lineType ∷ ∀ i m. Monad m ⇒ T.LineType → DSL (lineType ∷ I|i) m
-lineType a = set' "type" $ toForeign a
+lineType ∷ ∀ m. Monad m ⇒ T.LineType → DSL m
+lineType a = set' "type" $ unsafeToForeign a
 
-width ∷ ∀ i m. Monad m ⇒ Int → DSL (width ∷ I|i) m
-width a = set' "width" $ toForeign a
+width ∷ ∀ m. Monad m ⇒ Int → DSL m
+width a = set' "width" $ unsafeToForeign a
 
-widthPct ∷ ∀ i m. Monad m ⇒ Number → DSL (width ∷ I|i) m
-widthPct = set' "width" <<< toForeign <<< (_ <> "%") <<< show
+widthPct ∷ ∀ m. Monad m ⇒ Number → DSL m
+widthPct = set' "width" <<< unsafeToForeign <<< (_ <> "%") <<< show
 
-axisPointer ∷ ∀ i m. Monad m ⇒ CommandsT TP.AxisPointerI m ~> CommandsT (axisPointer ∷ I|i) m
+axisPointer ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 axisPointer = set "axisPointer" <=< buildObj
 
-scale ∷ ∀ i m. Monad m ⇒ Boolean → DSL (scale ∷ I|i) m
-scale a = set' "scale" $ toForeign a
+scale ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+scale a = set' "scale" $ unsafeToForeign a
 
-large ∷ ∀ i m. Monad m ⇒ Boolean → DSL (large ∷ I|i) m
-large a = set' "large" $ toForeign a
+large ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+large a = set' "large" $ unsafeToForeign a
 
-formatterAxis ∷ ∀ i m. Monad m ⇒ (Array T.FormatterInput → String) → DSL (formatter ∷ I|i) m
-formatterAxis a = set' "formatter" $ toForeign a
+formatterAxis ∷ ∀ m. Monad m ⇒ (Array T.FormatterInput → String) → DSL m
+formatterAxis a = set' "formatter" $ unsafeToForeign a
 
-formatterAxisArrayValue
- ∷ ∀ i m. Monad m ⇒ (Array T.FormatterInputArrayValue → String) → DSL (formatter ∷ I|i) m
-formatterAxisArrayValue a = set' "formatter" $ toForeign a
+formatterAxisArrayValue ∷ ∀ m. Monad m ⇒ (Array T.FormatterInputArrayValue → String) → DSL m
+formatterAxisArrayValue a = set' "formatter" $ unsafeToForeign a
 
-formatterItem
- ∷ ∀ i m. Monad m ⇒ (T.FormatterInput → String) → DSL (formatter ∷ I|i) m
-formatterItem a = set' "formatter" $ toForeign a
+formatterItem ∷ ∀ m. Monad m ⇒ (T.FormatterInput → String) → DSL m
+formatterItem a = set' "formatter" $ unsafeToForeign a
 
-formatterItemArrayValue
- ∷ ∀ i m. Monad m ⇒ (T.FormatterInputArrayValue → String) → DSL (formatter ∷ I|i) m
-formatterItemArrayValue a = set' "formatter" $ toForeign a
+formatterItemArrayValue ∷ ∀ m. Monad m ⇒ (T.FormatterInputArrayValue → String) → DSL m
+formatterItemArrayValue a = set' "formatter" $ unsafeToForeign a
 
-formatterString ∷ ∀ i m. Monad m ⇒ String → DSL (formatter ∷ I|i) m
-formatterString a = set' "formatter" $ toForeign a
+formatterString ∷ ∀ m. Monad m ⇒ String → DSL m
+formatterString a = set' "formatter" $ unsafeToForeign a
 
-formatterValue ∷ ∀ i m. Monad m ⇒ (Number → String) → DSL (formatter ∷ I|i) m
-formatterValue = set' "formatter" <<< toForeign
+formatterValue ∷ ∀ m. Monad m ⇒ (Number → String) → DSL m
+formatterValue = set' "formatter" <<< unsafeToForeign
 
-formatterLabel ∷ ∀ i m. Monad m ⇒ (String → String) → DSL (formatter ∷ I|i) m
-formatterLabel = set' "formatter" <<< toForeign
+formatterLabel ∷ ∀ m. Monad m ⇒ (String → String) → DSL m
+formatterLabel = set' "formatter" <<< unsafeToForeign
 
-animationEnabled ∷ ∀ i m. Monad m ⇒ Boolean → DSL (animation ∷ I|i) m
-animationEnabled a = set' "animation" $ toForeign a
+animationEnabled ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+animationEnabled a = set' "animation" $ unsafeToForeign a
 
-splitLine ∷ ∀ i m. Monad m ⇒ CommandsT TP.SplitLineI m ~> CommandsT (splitLine ∷ I|i) m
+splitLine ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 splitLine = set "splitLine" <=< buildObj
 
-boundaryGap ∷ ∀ i m. Monad m ⇒ T.Point → DSL (boundaryGap ∷ I|i) m
+boundaryGap ∷ ∀ m. Monad m ⇒ T.Point → DSL m
 boundaryGap a = set' "boundaryGap" $ T.pointToForeign a
 
-disabledBoundaryGap ∷ ∀ i m. Monad m ⇒ DSL (boundaryGap ∷ I|i) m
-disabledBoundaryGap = set' "boundaryGap" $ toForeign false
+disabledBoundaryGap ∷ ∀ m. Monad m ⇒ DSL m
+disabledBoundaryGap = set' "boundaryGap" $ unsafeToForeign false
 
-enabledBoundaryGap ∷ ∀ i m. Monad m ⇒ DSL (boundaryGap ∷ I|i) m
-enabledBoundaryGap = set' "boundaryGap" $ toForeign true
+enabledBoundaryGap ∷ ∀ m. Monad m ⇒ DSL m
+enabledBoundaryGap = set' "boundaryGap" $ unsafeToForeign true
 
-hoverAnimationEnabled ∷ ∀ i m. Monad m ⇒ Boolean → DSL (hoverAnimation ∷ I|i) m
-hoverAnimationEnabled a = set' "hoverAnimation" $ toForeign a
+hoverAnimationEnabled ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+hoverAnimationEnabled a = set' "hoverAnimation" $ unsafeToForeign a
 
-showSymbol ∷ ∀ i m. Monad m ⇒ Boolean → DSL (showSymbol ∷ I|i) m
-showSymbol a = set' "showSymbol" $ toForeign a
+showSymbol ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+showSymbol a = set' "showSymbol" $ unsafeToForeign a
 
-selectedMode ∷ ∀ i m. Monad m ⇒ T.SelectedMode → DSL (selectedMode ∷ I|i) m
+selectedMode ∷ ∀ m. Monad m ⇒ T.SelectedMode → DSL m
 selectedMode a = set' "selectedMode" $ T.selectedModeToForeign a
 
-label ∷ ∀ i m. Monad m ⇒ CommandsT TP.LabelI m ~> CommandsT (label ∷ I|i) m
+label ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 label = set "label" <=< buildObj
 
-normalLabel ∷ ∀ i m. Monad m ⇒ CommandsT TP.LabelInnerI m ~> CommandsT (normal ∷ R TP.LabelInnerI|i) m
+normalLabel ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 normalLabel = normal
 
-precision ∷ ∀ i m. Monad m ⇒ Number → DSL (precision ∷ I|i) m
-precision = set' "precision" <<< toForeign
+precision ∷ ∀ m. Monad m ⇒ Number → DSL m
+precision = set' "precision" <<< unsafeToForeign
 
-emphasisLabel ∷ ∀ i m. Monad m ⇒ CommandsT TP.LabelInnerI m ~> CommandsT (emphasis ∷ R TP.LabelInnerI|i) m
+emphasisLabel ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 emphasisLabel = emphasis
 
-selected ∷ ∀ i m. Monad m ⇒ Boolean → DSL (selected ∷ I|i) m
-selected a = set' "selected" $ toForeign a
+selected ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+selected a = set' "selected" $ unsafeToForeign a
 
-leftPosition ∷ ∀ i m. Monad m ⇒ T.HorizontalPosition → DSL (left ∷ I|i) m
+leftPosition ∷ ∀ m. Monad m ⇒ T.HorizontalPosition → DSL m
 leftPosition a = set' "left" $ T.horizontalPositionToForeign a
 
-alignLeft ∷ ∀ i m. Monad m ⇒ DSL (align ∷ I|i) m
-alignLeft = set' "align" $ toForeign "left"
+alignLeft ∷ ∀ m. Monad m ⇒ DSL m
+alignLeft = set' "align" $ unsafeToForeign "left"
 
-alignRight ∷ ∀ i m. Monad m ⇒ DSL (align ∷ I|i) m
-alignRight = set' "align" $ toForeign "right"
+alignRight ∷ ∀ m. Monad m ⇒ DSL m
+alignRight = set' "align" $ unsafeToForeign "right"
 
-alignAuto ∷ ∀ i m. Monad m ⇒ DSL (align ∷ I|i) m
-alignAuto = set' "align" $ toForeign "auto"
+alignAuto ∷ ∀ m. Monad m ⇒ DSL m
+alignAuto = set' "align" $ unsafeToForeign "auto"
 
-funnelLeft ∷ ∀ i m. Monad m ⇒ DSL (funnelAlign ∷ I|i) m
-funnelLeft = set' "funnelAlign" $ toForeign "left"
+funnelLeft ∷ ∀ m. Monad m ⇒ DSL m
+funnelLeft = set' "funnelAlign" $ unsafeToForeign "left"
 
-funnelRight ∷ ∀ i m. Monad m ⇒ DSL (funnelAlign ∷ I|i) m
-funnelRight = set' "funnelAlign" $ toForeign "right"
+funnelRight ∷ ∀ m. Monad m ⇒ DSL m
+funnelRight = set' "funnelAlign" $ unsafeToForeign "right"
 
-funnelCenter ∷ ∀ i m. Monad m ⇒ DSL (funnelAlign ∷ I|i) m
-funnelCenter = set' "funnelAlign" $ toForeign "center"
+funnelCenter ∷ ∀ m. Monad m ⇒ DSL m
+funnelCenter = set' "funnelAlign" $ unsafeToForeign "center"
 
-textLeft ∷ ∀ i m. Monad m ⇒ DSL (textAlign ∷ I|i) m
-textLeft = set' "textAlign" $ toForeign "left"
+textLeft ∷ ∀ m. Monad m ⇒ DSL m
+textLeft = set' "textAlign" $ unsafeToForeign "left"
 
-textRight ∷ ∀ i m. Monad m ⇒ DSL (textAlign ∷ I|i) m
-textRight = set' "textAlign" $ toForeign "right"
+textRight ∷ ∀ m. Monad m ⇒ DSL m
+textRight = set' "textAlign" $ unsafeToForeign "right"
 
-textCenter ∷ ∀ i m. Monad m ⇒ DSL (textAlign ∷ I|i) m
-textCenter = set' "textAlign" $ toForeign "center"
+textCenter ∷ ∀ m. Monad m ⇒ DSL m
+textCenter = set' "textAlign" $ unsafeToForeign "center"
 
-textTop ∷ ∀ i m. Monad m ⇒ DSL (textBaseline ∷ I|i) m
-textTop = set' "textBaseline" $ toForeign "top"
+textTop ∷ ∀ m. Monad m ⇒ DSL m
+textTop = set' "textBaseline" $ unsafeToForeign "top"
 
-textBottom ∷ ∀ i m. Monad m ⇒ DSL (textBaseline ∷ I|i) m
-textBottom = set' "textBaseline" $ toForeign "bottom"
+textBottom ∷ ∀ m. Monad m ⇒ DSL m
+textBottom = set' "textBaseline" $ unsafeToForeign "bottom"
 
-textMiddle ∷ ∀ i m. Monad m ⇒ DSL (textBaseline ∷ I|i) m
-textMiddle = set' "textBaseline" $ toForeign "middle"
+textMiddle ∷ ∀ m. Monad m ⇒ DSL m
+textMiddle = set' "textBaseline" $ unsafeToForeign "middle"
 
-brush ∷ ∀ i m. Monad m ⇒ CommandsT TP.BrushI m ~> CommandsT (brush ∷ I|i) m
+brush ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 brush = set "brush" <=< buildObj
 
-brushType ∷ ∀ i m. Monad m ⇒ CommandsT TP.BrushToolboxI m ~> CommandsT (brushType ∷ I|i) m
+brushType ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 brushType = set "type" <=< buildArr
 
-brushToolbox ∷ ∀ i m. Monad m ⇒ CommandsT TP.BrushToolboxI m ~> CommandsT (brushToolbox ∷ I|i) m
+brushToolbox ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 brushToolbox = set "toolbox" <=< buildArr
 
-brushModeSingle ∷ ∀ i m. Monad m ⇒ DSL (brushMode ∷ I|i) m
-brushModeSingle = set' "brushMode" $ toForeign "single"
+brushModeSingle ∷ ∀ m. Monad m ⇒ DSL m
+brushModeSingle = set' "brushMode" $ unsafeToForeign "single"
 
-brushIcons ∷ ∀ i m. Monad m ⇒ CommandsT TP.BFFieldI m ~> CommandsT (bfIcon ∷ I|i) m
+brushIcons ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 brushIcons a = set "icon" =<< buildObj a
 
-brushTitle ∷ ∀ i m. Monad m ⇒ CommandsT TP.BFFieldI m ~> CommandsT (bfTitle ∷ I|i) m
+brushTitle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 brushTitle a = set "title" =<< buildObj a
 
-brushModeMultiple ∷ ∀ i m. Monad m ⇒ DSL (brushMode ∷ I|i) m
-brushModeMultiple = set' "brushMode" $ toForeign "multiple"
+brushModeMultiple ∷ ∀ m. Monad m ⇒ DSL m
+brushModeMultiple = set' "brushMode" $ unsafeToForeign "multiple"
 
-rect ∷ ∀ i m. Monad m ⇒ DSL (tool ∷ I|i) m
-rect = set' "" $ toForeign "rect"
+rect ∷ ∀ m. Monad m ⇒ DSL m
+rect = set' "" $ unsafeToForeign "rect"
 
-setRect ∷ ∀ i m. Monad m ⇒ String → DSL (rect ∷ I|i) m
-setRect a = set' "rect" $ toForeign a
+setRect ∷ ∀ m. Monad m ⇒ String → DSL m
+setRect a = set' "rect" $ unsafeToForeign a
 
-polygon ∷ ∀ i m. Monad m ⇒ DSL (tool ∷ I|i) m
-polygon = set' "" $ toForeign "polygon"
+polygon ∷ ∀ m. Monad m ⇒ DSL m
+polygon = set' "" $ unsafeToForeign "polygon"
 
-setPolygon ∷ ∀ i m. Monad m ⇒ String → DSL (polygon ∷ I|i) m
-setPolygon a = set' "polygon" $ toForeign a
+setPolygon ∷ ∀ m. Monad m ⇒ String → DSL m
+setPolygon a = set' "polygon" $ unsafeToForeign a
 
-lineX ∷ ∀ i m. Monad m ⇒ DSL (tool ∷ I|i) m
-lineX = set' "" $ toForeign "lineX"
+lineX ∷ ∀ m. Monad m ⇒ DSL m
+lineX = set' "" $ unsafeToForeign "lineX"
 
-setLineX ∷ ∀ i m. Monad m ⇒ String → DSL (lineX ∷ I|i) m
-setLineX a = set' "lineX" $ toForeign a
+setLineX ∷ ∀ m. Monad m ⇒ String → DSL m
+setLineX a = set' "lineX" $ unsafeToForeign a
 
-lineY ∷ ∀ i m. Monad m ⇒ DSL (tool ∷ I|i) m
-lineY = set' "" $ toForeign "lineY"
+lineY ∷ ∀ m. Monad m ⇒ DSL m
+lineY = set' "" $ unsafeToForeign "lineY"
 
-setLineY ∷ ∀ i m. Monad m ⇒ String → DSL (lineY ∷ I|i) m
-setLineY a = set' "lineY" $ toForeign a
+setLineY ∷ ∀ m. Monad m ⇒ String → DSL m
+setLineY a = set' "lineY" $ unsafeToForeign a
 
-keep ∷ ∀ i m. Monad m ⇒ DSL (tool ∷ I|i) m
-keep = set' "" $ toForeign "keep"
+keep ∷ ∀ m. Monad m ⇒ DSL m
+keep = set' "" $ unsafeToForeign "keep"
 
-setKeep ∷ ∀ i m. Monad m ⇒ String → DSL (keep ∷ I|i) m
-setKeep a = set' "keep" $ toForeign a
+setKeep ∷ ∀ m. Monad m ⇒ String → DSL m
+setKeep a = set' "keep" $ unsafeToForeign a
 
-clear ∷ ∀ i m. Monad m ⇒ DSL (tool ∷ I|i) m
-clear = set' "" $ toForeign "clear"
+clear ∷ ∀ m. Monad m ⇒ DSL m
+clear = set' "" $ unsafeToForeign "clear"
 
-setClear ∷ ∀ i m. Monad m ⇒ String → DSL (clear ∷ I|i) m
-setClear a = set' "clear" $ toForeign a
+setClear ∷ ∀ m. Monad m ⇒ String → DSL m
+setClear a = set' "clear" $ unsafeToForeign a
 
-dataZoom ∷ ∀ i m. Monad m ⇒ CommandsT TP.DataZoomI m ~> CommandsT (dataZoom ∷ I|i) m
+dataZoom ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 dataZoom = set "dataZoom" <=< buildSeries
 
-insideDataZoom ∷ ∀ i m. Monad m ⇒ CommandsT TP.InsideDataZoomI m ~> CommandsT (insideDataZoom ∷ I|i) m
+insideDataZoom ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 insideDataZoom = set "inside" <=< buildObj
 
-sliderDataZoom ∷ ∀ i m. Monad m ⇒ CommandsT TP.SliderDataZoomI m ~> CommandsT (sliderDataZoom ∷ I|i) m
-sliderDataZoom = set "slider" <=< buildObj 
+sliderDataZoom ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
+sliderDataZoom = set "slider" <=< buildObj
 
-toolbox ∷ ∀ i m. Monad m ⇒ CommandsT TP.ToolboxI m ~> CommandsT (toolbox ∷ I|i) m
+toolbox ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 toolbox a = set "toolbox" =<< buildObj a
 
-feature ∷ ∀ i m. Monad m ⇒ CommandsT TP.FeatureI m ~> CommandsT (feature ∷ I|i) m
+feature ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 feature a = set "feature" =<< buildObj a
 
-brushFeature ∷ ∀ i m. Monad m ⇒ CommandsT TP.BrushFeatureI m ~> CommandsT (brush ∷ I|i) m
+brushFeature ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 brushFeature a = set "brush" =<< buildObj a
 
-magicType ∷ ∀ i m. Monad m ⇒ CommandsT TP.MagicTypeI m ~> CommandsT (magicType ∷ I|i) m
+magicType ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 magicType a = set "magicType" =<< buildObj a
 
-magics ∷ ∀ i m. Monad m ⇒ CommandsT TP.MagicsI m ~> CommandsT (magics ∷ I|i) m
+magics ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 magics a = set "type" =<< buildArr a
 
-magicLine ∷ ∀ i m. Monad m ⇒ DSL (magic ∷ I|i) m
-magicLine = set' "" $ toForeign "line"
+magicLine ∷ ∀ m. Monad m ⇒ DSL m
+magicLine = set' "" $ unsafeToForeign "line"
 
-magicBar ∷ ∀ i m. Monad m ⇒ DSL (magic ∷ I|i) m
-magicBar = set' "" $ toForeign "bar"
+magicBar ∷ ∀ m. Monad m ⇒ DSL m
+magicBar = set' "" $ unsafeToForeign "bar"
 
-magicStack ∷ ∀ i m. Monad m ⇒ DSL (magic ∷ I|i) m
-magicStack = set' "" $ toForeign "stack"
+magicStack ∷ ∀ m. Monad m ⇒ DSL m
+magicStack = set' "" $ unsafeToForeign "stack"
 
-magicTiled ∷ ∀ i m. Monad m ⇒ DSL (magic ∷ I|i) m
-magicTiled = set' "" $ toForeign "tiled"
+magicTiled ∷ ∀ m. Monad m ⇒ DSL m
+magicTiled = set' "" $ unsafeToForeign "tiled"
 
-dataView ∷ ∀ i m. Monad m ⇒ CommandsT TP.DataViewI m ~> CommandsT (dataView ∷ I|i) m
+dataView ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 dataView a = set "dataView" =<< buildObj a
 
-dataZoomFeature ∷ ∀ i m. Monad m ⇒ CommandsT TP.DataZoomFeatureI m ~> CommandsT (dataZoom ∷ I|i) m
+dataZoomFeature ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 dataZoomFeature = set "dataZoom" <=< buildObj
 
-splitArea ∷ ∀ i m. Monad m ⇒ CommandsT TP.SplitAreaI m ~> CommandsT (splitArea ∷ I|i) m
+splitArea ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 splitArea a = set "splitArea" =<< buildObj a
 
-axisLine ∷ ∀ i m. Monad m ⇒ CommandsT TP.AxisLineI m ~> CommandsT (axisLine ∷ I|i) m
+axisLine ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 axisLine a = set "axisLine" =<< buildObj a
 
-silent ∷ ∀ i m. Monad m ⇒ Boolean → DSL (silent ∷ I|i) m
-silent a = set' "silent" $ toForeign a
+silent ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+silent a = set' "silent" $ unsafeToForeign a
 
-onZero ∷ ∀ i m. Monad m ⇒ Boolean → DSL (onZero ∷ I|i) m
-onZero a = set' "onZero" $ toForeign a
+onZero ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+onZero a = set' "onZero" $ unsafeToForeign a
 
-inverse ∷ ∀ i m. Monad m ⇒ Boolean → DSL (inverse ∷ I|i) m
-inverse a = set' "inverse" $ toForeign a
+inverse ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+inverse a = set' "inverse" $ unsafeToForeign a
 
-visualMap ∷ ∀ i m. Monad m ⇒ CommandsT TP.VisualMapI m ~> CommandsT (visualMap ∷ I|i) m
+visualMap ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 visualMap a = set "visualMap" =<< buildSeries a
 
-calendar ∷ ∀ i m. Monad m ⇒ CommandsT TP.CalendarI m ~> CommandsT (calendar ∷ I|i) m
+calendar ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 calendar a = set "calendar" =<< buildSeries a
 
-continuous ∷ ∀ i m. Monad m ⇒ CommandsT TP.ContinuousVisualMapI m ~> CommandsT (continuousVisualMap ∷ I|i) m
+continuous ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 continuous a = set "continuous" =<< buildObj a
 
-dimension ∷ ∀ i m. Monad m ⇒ Int → DSL (dimension ∷ I|i) m
-dimension a = set' "dimension" $ toForeign a
+dimension ∷ ∀ m. Monad m ⇒ Int → DSL m
+dimension a = set' "dimension" $ unsafeToForeign a
 
-textPair ∷ ∀ i m. Monad m ⇒ String → String → DSL (textPair ∷ I|i) m
-textPair high low = set' "text" $ toForeign [high, low]
+textPair ∷ ∀ m. Monad m ⇒ String → String → DSL m
+textPair high low = set' "text" $ unsafeToForeign [high, low]
 
-itemHeight ∷ ∀ i m. Monad m ⇒ Number → DSL (itemHeight ∷ I|i) m
-itemHeight a = set' "itemHeight" $ toForeign a
+itemHeight ∷ ∀ m. Monad m ⇒ Number → DSL m
+itemHeight a = set' "itemHeight" $ unsafeToForeign a
 
-itemWidth ∷ ∀ i m. Monad m ⇒ Number → DSL (itemWidth ∷ I|i) m
-itemWidth a = set' "itemWidth" $ toForeign a
+itemWidth ∷ ∀ m. Monad m ⇒ Number → DSL m
+itemWidth a = set' "itemWidth" $ unsafeToForeign a
 
-calculable ∷ ∀ i m. Monad m ⇒ Boolean → DSL (calculable ∷ I|i) m
-calculable a = set' "calculable" $ toForeign a
+calculable ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+calculable a = set' "calculable" $ unsafeToForeign a
 
-min ∷ ∀ i m. Monad m ⇒ Number → DSL (min ∷ I|i) m
-min a = set' "min" $ toForeign a
+min ∷ ∀ m. Monad m ⇒ Number → DSL m
+min a = set' "min" $ unsafeToForeign a
 
-max ∷ ∀ i m. Monad m ⇒ Number → DSL (max ∷ I|i) m
-max a = set' "max" $ toForeign a
+max ∷ ∀ m. Monad m ⇒ Number → DSL m
+max a = set' "max" $ unsafeToForeign a
 
-inRange ∷ ∀ i m. Monad m ⇒ CommandsT TP.InOutRangeI m ~> CommandsT (inRange ∷ I|i) m
+inRange ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 inRange a = set "inRange" =<< buildObj a
 
-outOfRange ∷ ∀ i m. Monad m ⇒ CommandsT TP.InOutRangeI m ~> CommandsT (outOfRange ∷ I|i) m
+outOfRange ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 outOfRange a = set "outOfRange" =<< buildObj a
 
-controller ∷ ∀ i m. Monad m ⇒ CommandsT TP.ControllerI m ~> CommandsT (controller ∷ I|i) m
+controller ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 controller a = set "controller" =<< buildObj a
 
-colorLightness ∷ ∀ i m. Monad m ⇒ Number → Number → DSL (colorLightness ∷ I|i) m
-colorLightness a b = set' "colorLightness" $ toForeign [a, b]
+colorLightness ∷ ∀ m. Monad m ⇒ Number → Number → DSL m
+colorLightness a b = set' "colorLightness" $ unsafeToForeign [a, b]
 
-itemStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.ItemStyleI m ~> CommandsT (itemStyle ∷ I|i) m
+itemStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 itemStyle a = set "itemStyle" =<< buildObj a
 
-normalItemStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.IStyleI m ~> CommandsT (normal ∷ R TP.IStyleI|i) m
+normalItemStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 normalItemStyle = normal
 
-emphasisItemStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.IStyleI m ~> CommandsT (emphasis ∷ R TP.IStyleI|i) m
+emphasisItemStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 emphasisItemStyle = emphasis
 
-barBorderWidth ∷ ∀ i m. Monad m ⇒ Number → DSL (barBorderWidth ∷ I|i) m
-barBorderWidth a = set' "barBorderWidth" $ toForeign a
+barBorderWidth ∷ ∀ m. Monad m ⇒ Number → DSL m
+barBorderWidth a = set' "barBorderWidth" $ unsafeToForeign a
 
-shadowBlur ∷ ∀ i m. Monad m ⇒ Number → DSL (shadowBlur ∷ I|i) m
-shadowBlur a = set' "shadowBlur" $ toForeign a
+shadowBlur ∷ ∀ m. Monad m ⇒ Number → DSL m
+shadowBlur a = set' "shadowBlur" $ unsafeToForeign a
 
-shadowOffsetX ∷ ∀ i m. Monad m ⇒ Number → DSL (shadowOffsetX ∷ I|i) m
-shadowOffsetX a = set' "shadowOffsetX" $ toForeign a
+shadowOffsetX ∷ ∀ m. Monad m ⇒ Number → DSL m
+shadowOffsetX a = set' "shadowOffsetX" $ unsafeToForeign a
 
-shadowOffsetY ∷ ∀ i m. Monad m ⇒ Number → DSL (shadowOffsetY ∷ I|i) m
-shadowOffsetY a = set' "shadowOffsetY" $ toForeign a
+shadowOffsetY ∷ ∀ m. Monad m ⇒ Number → DSL m
+shadowOffsetY a = set' "shadowOffsetY" $ unsafeToForeign a
 
-shadowColor ∷ ∀ i m. Monad m ⇒ C.Color → DSL (shadowColor ∷ I|i) m
-shadowColor a = set' "shadowColor" $ toForeign $ C.cssStringRGBA a
+shadowColor ∷ ∀ m. Monad m ⇒ C.Color → DSL m
+shadowColor a = set' "shadowColor" $ unsafeToForeign $ C.cssStringRGBA a
 
-restore ∷ ∀ i m. Monad m ⇒ CommandsT TP.RestoreI m ~> CommandsT (restore ∷ I|i) m
+restore ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 restore = set "restore" <=< buildObj
 
-saveAsImage ∷ ∀ i m. Monad m ⇒ CommandsT TP.SaveAsImageI m ~> CommandsT (saveAsImage ∷ I|i) m
+saveAsImage ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 saveAsImage = set "saveAsImage" <=< buildObj
 
-z ∷ ∀ i m. Monad m ⇒ Int → DSL (z ∷ I|i) m
-z = set' "z" <<< toForeign
+z ∷ ∀ m. Monad m ⇒ Int → DSL m
+z = set' "z" <<< unsafeToForeign
 
-splitNumber ∷ ∀ i m. Monad m ⇒ Int → DSL (splitNumber ∷ I|i) m
-splitNumber = set' "splitNumber" <<< toForeign
+splitNumber ∷ ∀ m. Monad m ⇒ Int → DSL m
+splitNumber = set' "splitNumber" <<< unsafeToForeign
 
-gaugeRadius ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (gaugeRadius ∷ I|i) m
+gaugeRadius ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 gaugeRadius = set' "radius" <<< T.pixelOrPercentToForeign
 
-detail ∷ ∀ i m. Monad m ⇒ CommandsT TP.DetailI m ~> CommandsT (detail ∷ I|i) m
+detail ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 detail = set "detail" <=< buildObj
 
-endAngle ∷ ∀ i m. Monad m ⇒ Number → DSL (endAngle ∷ I|i) m
-endAngle = set' "endAngle" <<< toForeign
+endAngle ∷ ∀ m. Monad m ⇒ Number → DSL m
+endAngle = set' "endAngle" <<< unsafeToForeign
 
-gaugePointer ∷ ∀ i m. Monad m ⇒ CommandsT TP.GaugePointerI m ~> CommandsT (gaugePointer ∷ I|i) m
+gaugePointer ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 gaugePointer = set "pointer" <=< buildObj
 
-length ∷ ∀ i m. Monad m ⇒ Int → DSL (length ∷ I|i) m
-length = set' "length" <<< toForeign
+length ∷ ∀ m. Monad m ⇒ Int → DSL m
+length = set' "length" <<< unsafeToForeign
 
-autoColor ∷ ∀ i m. Monad m ⇒ DSL (color ∷ I|i) m
-autoColor = set' "color" $ toForeign "auto"
+autoColor ∷ ∀ m. Monad m ⇒ DSL m
+autoColor = set' "color" $ unsafeToForeign "auto"
 
-bolderFontWeight ∷ ∀ i m. Monad m ⇒ DSL (fontWeight ∷ I|i) m
-bolderFontWeight = set' "fontWeight" $ toForeign "bolder"
+bolderFontWeight ∷ ∀ m. Monad m ⇒ DSL m
+bolderFontWeight = set' "fontWeight" $ unsafeToForeign "bolder"
 
-fontSize ∷ ∀ i m. Monad m ⇒ Int → DSL (fontSize ∷ I|i) m
-fontSize = set' "fontSize" <<< toForeign
+fontSize ∷ ∀ m. Monad m ⇒ Int → DSL m
+fontSize = set' "fontSize" <<< unsafeToForeign
 
-italicFontStyle ∷ ∀ i m. Monad m ⇒ DSL (fontStyle ∷ I|i) m
-italicFontStyle = set' "fontStyle" $ toForeign "italic"
+italicFontStyle ∷ ∀ m. Monad m ⇒ DSL m
+italicFontStyle = set' "fontStyle" $ unsafeToForeign "italic"
 
-offsetCenter ∷ ∀ i m. Monad m ⇒ T.Point → DSL (offsetCenter ∷ I|i) m
+offsetCenter ∷ ∀ m. Monad m ⇒ T.Point → DSL m
 offsetCenter = set' "offsetCenter" <<< T.pointToForeign
 
-subtext ∷ ∀ i m. Monad m ⇒ String → DSL (subtext ∷ I|i) m
-subtext = set' "subtext" <<< toForeign
+subtext ∷ ∀ m. Monad m ⇒ String → DSL m
+subtext = set' "subtext" <<< unsafeToForeign
 
-readOnly ∷ ∀ i m. Monad m ⇒ Boolean → DSL (readOnly ∷ I|i) m
-readOnly = set' "readOnly" <<< toForeign
+readOnly ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+readOnly = set' "readOnly" <<< unsafeToForeign
 
-positionInside ∷ ∀ i m. Monad m ⇒ DSL (position ∷ I|i) m
-positionInside = set' "position" $ toForeign "inside"
+positionInside ∷ ∀ m. Monad m ⇒ DSL m
+positionInside = set' "position" $ unsafeToForeign "inside"
 
-positionTop ∷ ∀ i m. Monad m ⇒ DSL (position ∷ I|i) m
-positionTop = set' "position" $ toForeign "top"
+positionTop ∷ ∀ m. Monad m ⇒ DSL m
+positionTop = set' "position" $ unsafeToForeign "top"
 
-labelLine ∷ ∀ i m. Monad m ⇒ CommandsT TP.LabelLineI m ~> CommandsT (labelLine ∷ I|i) m
+labelLine ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 labelLine = set "labelLine" <=< buildObj
 
-normalLabelLine ∷ ∀ i m. Monad m ⇒ CommandsT TP.LabelLineInnerI m ~> CommandsT (normal ∷ R TP.LabelLineInnerI|i) m
+normalLabelLine ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 normalLabelLine = normal
 
 emphasisLabelLine
- ∷ ∀ i m. Monad m ⇒ CommandsT TP.LabelLineInnerI m ~> CommandsT (emphasis ∷ R TP.LabelLineInnerI|i) m
+ ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 emphasisLabelLine = emphasis
 
-opacity ∷ ∀ i m. Monad m ⇒ Number → DSL (opacity ∷ I|i) m
-opacity = set' "opacity" <<< toForeign
+opacity ∷ ∀ m. Monad m ⇒ Number → DSL m
+opacity = set' "opacity" <<< unsafeToForeign
 
-maxSize ∷ ∀ i m. Monad m ⇒ Int → DSL (maxSize ∷ I|i) m
-maxSize = set' "maxSize" <<< toForeign
+maxSize ∷ ∀ m. Monad m ⇒ Int → DSL m
+maxSize = set' "maxSize" <<< unsafeToForeign
 
-maxSizePct ∷ ∀ i m. Monad m ⇒ Number → DSL (maxSize ∷ I|i) m
-maxSizePct = set' "maxSize" <<< toForeign <<< (_ <> "%") <<< show
+maxSizePct ∷ ∀ m. Monad m ⇒ Number → DSL m
+maxSizePct = set' "maxSize" <<< unsafeToForeign <<< (_ <> "%") <<< show
 
-borderColor ∷ ∀ i m. Monad m ⇒ C.Color → DSL (borderColor ∷ I|i) m
-borderColor = set' "borderColor" <<< toForeign <<< C.toHexString
+borderColor ∷ ∀ m. Monad m ⇒ C.Color → DSL m
+borderColor = set' "borderColor" <<< unsafeToForeign <<< C.toHexString
 
-borderWidth ∷ ∀ i m. Monad m ⇒ Int → DSL (borderWidth ∷ I|i) m
-borderWidth = set' "borderWidth" <<< toForeign
+borderWidth ∷ ∀ m. Monad m ⇒ Int → DSL m
+borderWidth = set' "borderWidth" <<< unsafeToForeign
 
-normalLineStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.LineStyleI m ~> CommandsT (normal ∷ R TP.LineStyleI|i) m
+normalLineStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 normalLineStyle = normal
 
-emphasisLineStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.LineStyleI m ~> CommandsT (emphasis ∷ R TP.LineStyleI|i) m
+emphasisLineStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 emphasisLineStyle = emphasis
 
-leftCenter ∷ ∀ i m. Monad m ⇒ DSL (left ∷ I|i) m
-leftCenter = set' "left" $ toForeign "center"
+leftCenter ∷ ∀ m. Monad m ⇒ DSL m
+leftCenter = set' "left" $ unsafeToForeign "center"
 
-leftLeft ∷ ∀ i m. Monad m ⇒ DSL (left ∷ I|i) m
-leftLeft = set' "left" $ toForeign "left"
+leftLeft ∷ ∀ m. Monad m ⇒ DSL m
+leftLeft = set' "left" $ unsafeToForeign "left"
 
-leftRight ∷ ∀ i m. Monad m ⇒ DSL (left ∷ I|i) m
-leftRight = set' "left" $ toForeign "right"
+leftRight ∷ ∀ m. Monad m ⇒ DSL m
+leftRight = set' "left" $ unsafeToForeign "right"
 
-itemGap ∷ ∀ i m. Monad m ⇒ Int → DSL (itemGap ∷ I|i) m
-itemGap = set' "itemGap" <<< toForeign
+itemGap ∷ ∀ m. Monad m ⇒ Int → DSL m
+itemGap = set' "itemGap" <<< unsafeToForeign
 
-indicators ∷ ∀ i m. Monad m ⇒ CommandsT TP.IndicatorsI m ~> CommandsT (indicators ∷ I|i) m
+indicators ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 indicators = set "indicator" <=< buildArr
 
-indicator ∷ ∀ i m. Monad m ⇒ CommandsT TP.IndicatorI m ~> CommandsT (indicator ∷ I|i) m
+indicator ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 indicator = set "" <=< buildObj
 
-radarName ∷ ∀ i m. Monad m ⇒ CommandsT TP.RadarNameI m ~> CommandsT (radarName ∷ I|i) m
+radarName ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 radarName = set "name" <=< buildObj
 
-nameGap ∷ ∀ i m. Monad m ⇒ Number → DSL (nameGap ∷ I|i) m
-nameGap = set' "nameGap" <<< toForeign
+nameGap ∷ ∀ m. Monad m ⇒ Number → DSL m
+nameGap = set' "nameGap" <<< unsafeToForeign
 
-polygonShape ∷ ∀ i m. Monad m ⇒ DSL (shape ∷ I|i) m
-polygonShape = set' "shape" $ toForeign "polygon"
+polygonShape ∷ ∀ m. Monad m ⇒ DSL m
+polygonShape = set' "shape" $ unsafeToForeign "polygon"
 
-circleShape ∷ ∀ i m. Monad m ⇒ DSL (shape ∷ I|i) m
-circleShape = set' "shape" $ toForeign "circle"
+circleShape ∷ ∀ m. Monad m ⇒ DSL m
+circleShape = set' "shape" $ unsafeToForeign "circle"
 
-lineStylePair ∷ ∀ i m. Monad m ⇒ CommandsT TP.LineStylePairI m ~> CommandsT (lineStyle ∷ R TP.LineStylePairI|i) m
+lineStylePair ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 lineStylePair = lineStyle
 
-areaStylePair ∷ ∀ i m. Monad m ⇒ CommandsT TP.AreaStylePairI m ~> CommandsT (areaStyle ∷ R TP.AreaStylePairI|i) m
+areaStylePair ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 areaStylePair = areaStyle
 
-normalAreaStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.AreaStyleI m ~> CommandsT (normal ∷ R TP.AreaStyleI|i) m
+normalAreaStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 normalAreaStyle = normal
 
-emphasisAreaStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.AreaStyleI m ~> CommandsT (emphasis ∷ R TP.AreaStyleI|i) m
+emphasisAreaStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 emphasisAreaStyle = emphasis
 
-radars ∷ ∀ i m. Monad m ⇒ CommandsT TP.RadarsI m ~> CommandsT (radar ∷ I|i) m
+radars ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 radars = set "radar" <=< buildArr
 
-radar ∷ ∀ i m. Monad m ⇒ CommandsT TP.RadarI m ~> CommandsT (radar ∷ I|i) m
+radar ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 radar = set "radar" <=< buildObj
 
-ascending ∷ ∀ i m. Monad m ⇒ DSL (sort ∷ I|i) m
-ascending = set' "sort" $ toForeign "ascending"
+ascending ∷ ∀ m. Monad m ⇒ DSL m
+ascending = set' "sort" $ unsafeToForeign "ascending"
 
-descending ∷ ∀ i m. Monad m ⇒ DSL (sort ∷ I|i) m
-descending = set' "sort" $ toForeign "descending"
+descending ∷ ∀ m. Monad m ⇒ DSL m
+descending = set' "sort" $ unsafeToForeign "descending"
 
-animationDurationUpdate ∷ ∀ i m. Monad m ⇒ Int → DSL (animationDurationUpdate ∷ I|i) m
-animationDurationUpdate = set' "animationDurationUpdate" <<< toForeign
+animationDurationUpdate ∷ ∀ m. Monad m ⇒ Int → DSL m
+animationDurationUpdate = set' "animationDurationUpdate" <<< unsafeToForeign
 
-animationEasingUpdateQuinticInOut ∷ ∀ i m. Monad m ⇒ DSL (animationEasingUpdate ∷ I|i) m
-animationEasingUpdateQuinticInOut = set' "animationEasingUpdate" $ toForeign "quinticInOut"
+animationEasingUpdateQuinticInOut ∷ ∀ m. Monad m ⇒ DSL m
+animationEasingUpdateQuinticInOut = set' "animationEasingUpdate" $ unsafeToForeign "quinticInOut"
 
-roam ∷ ∀ i m. Monad m ⇒ Boolean → DSL (roam ∷ I|i) m
-roam = set' "roam" <<< toForeign
+roam ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+roam = set' "roam" <<< unsafeToForeign
 
-edgeSymbols ∷ ∀ i m. Monad m ⇒ CommandsT TP.EdgeSymbolsI m ~> CommandsT (edgeSymbols ∷ I|i) m
+edgeSymbols ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 edgeSymbols = set "edgeSymbol" <=< buildArr
 
-circleEdgeSymbol ∷ ∀ i m. Monad m ⇒ DSL (edgeSymbol ∷ I|i) m
-circleEdgeSymbol = set' "" $ toForeign "circle"
+circleEdgeSymbol ∷ ∀ m. Monad m ⇒ DSL m
+circleEdgeSymbol = set' "" $ unsafeToForeign "circle"
 
-arrowEdgeSymbol ∷ ∀ i m. Monad m ⇒ DSL (edgeSymbol ∷ I|i) m
-arrowEdgeSymbol = set' "" $ toForeign "arrow"
+arrowEdgeSymbol ∷ ∀ m. Monad m ⇒ DSL m
+arrowEdgeSymbol = set' "" $ unsafeToForeign "arrow"
 
-edgeSymbolSize ∷ ∀ i m. Monad m ⇒ Int → DSL (edgeSymbolSize ∷ I|i) m
-edgeSymbolSize = set' "edgeSymbolSize" <<< toForeign
+edgeSymbolSize ∷ ∀ m. Monad m ⇒ Int → DSL m
+edgeSymbolSize = set' "edgeSymbolSize" <<< unsafeToForeign
 
-edgeSymbolSizes ∷ ∀ i m. Monad m ⇒ Int → Int → DSL (edgeSymbolSize ∷ I|i) m
-edgeSymbolSizes a b = set' "edgeSymbolSize" $ toForeign [a, b]
+edgeSymbolSizes ∷ ∀ m. Monad m ⇒ Int → Int → DSL m
+edgeSymbolSizes a b = set' "edgeSymbolSize" $ unsafeToForeign [a, b]
 
-buildLinks ∷ ∀ i m. Monad m ⇒ CommandsT TP.LinksI m ~> CommandsT (links ∷ I|i) m
+buildLinks ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildLinks = set "links" <=< buildArr
 
-addLink ∷ ∀ i m. Monad m ⇒ CommandsT TP.LinkI m ~> CommandsT (link ∷ I|i) m
+addLink ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 addLink = set "" <=< buildObj
 
-links ∷ ∀ i m. Monad m ⇒ Array { source ∷ String, target ∷ String } → DSL (links ∷ I|i) m
-links = set' "links" <<< toForeign
+links ∷ ∀ m. Monad m ⇒ Array { source ∷ String, target ∷ String } → DSL m
+links = set' "links" <<< unsafeToForeign
 
-edgeLabel ∷ ∀ i m. Monad m ⇒ CommandsT TP.EdgeLabelI m ~> CommandsT (edgeLabel ∷ I|i) m
+edgeLabel ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 edgeLabel = set "edgeLabel" <=< buildObj
 
 normalEdgeLabel
-  ∷ ∀ i m
+  ∷ ∀ m
   . Monad m
-  ⇒ CommandsT TP.EdgeLabelInnerI m
-  ~> CommandsT (normal ∷ R TP.EdgeLabelInnerI|i) m
+  ⇒ CommandsT m
+  ~> CommandsT m
 normalEdgeLabel = normal
 
 emphasisEdgeLabel
- ∷ ∀ i m
+ ∷ ∀ m
  . Monad m
- ⇒ CommandsT TP.EdgeLabelInnerI m
- ~> CommandsT (emphasis ∷ R TP.EdgeLabelInnerI|i) m
+ ⇒ CommandsT m
+ ~> CommandsT m
 emphasisEdgeLabel = emphasis
 
-x ∷ ∀ i m. Monad m ⇒ Number → DSL (x ∷ I|i) m
-x = set' "x" <<< toForeign
+x ∷ ∀ m. Monad m ⇒ Number → DSL m
+x = set' "x" <<< unsafeToForeign
 
-y ∷ ∀ i m. Monad m ⇒ Number → DSL (y ∷ I|i) m
-y = set' "y" <<< toForeign
+y ∷ ∀ m. Monad m ⇒ Number → DSL m
+y = set' "y" <<< unsafeToForeign
 
-curveness ∷ ∀ i m. Monad m ⇒ Number → DSL (curveness ∷ I|i) m
-curveness = set' "curveness" <<< toForeign
+curveness ∷ ∀ m. Monad m ⇒ Number → DSL m
+curveness = set' "curveness" <<< unsafeToForeign
 
-symbolSizes ∷ ∀ i m. Monad m ⇒ Int → Int → DSL (symbolSize ∷ I|i) m
-symbolSizes a b = set' "symbolSize" $ toForeign [a, b]
+symbolSizes ∷ ∀ m. Monad m ⇒ Int → Int → DSL m
+symbolSizes a b = set' "symbolSize" $ unsafeToForeign [a, b]
 
-symbolSizeArrFunc ∷ ∀ i m. Monad m ⇒ (Array Number → Number) → DSL (symbolSize ∷ I|i) m
-symbolSizeArrFunc fn = set' "symbolSize" $ toForeign fn
+symbolSizeArrFunc ∷ ∀ m. Monad m ⇒ (Array Number → Number) → DSL m
+symbolSizeArrFunc fn = set' "symbolSize" $ unsafeToForeign fn
 
-sourceIx ∷ ∀ i m. Monad m ⇒ Int → DSL (source ∷ I|i) m
-sourceIx = set' "source" <<< toForeign
+sourceIx ∷ ∀ m. Monad m ⇒ Int → DSL m
+sourceIx = set' "source" <<< unsafeToForeign
 
-targetIx ∷ ∀ i m. Monad m ⇒ Int → DSL (target ∷ I|i) m
-targetIx = set' "target" <<< toForeign
+targetIx ∷ ∀ m. Monad m ⇒ Int → DSL m
+targetIx = set' "target" <<< unsafeToForeign
 
-sourceName ∷ ∀ i m. Monad m ⇒ String → DSL (source ∷ I|i) m
-sourceName = set' "source" <<< toForeign
+sourceName ∷ ∀ m. Monad m ⇒ String → DSL m
+sourceName = set' "source" <<< unsafeToForeign
 
-targetName ∷ ∀ i m. Monad m ⇒ String → DSL (target ∷ I|i) m
-targetName = set' "target" <<< toForeign
+targetName ∷ ∀ m. Monad m ⇒ String → DSL m
+targetName = set' "target" <<< unsafeToForeign
 
-subtargetName ∷ ∀ i m. Monad m ⇒ String → DSL (subtarget ∷ I|i) m
-subtargetName = set' "subtarget" <<< toForeign
+subtargetName ∷ ∀ m. Monad m ⇒ String → DSL m
+subtargetName = set' "subtarget" <<< unsafeToForeign
 
-layoutNone ∷ ∀ i m. Monad m ⇒ DSL (layout ∷ I|i) m
-layoutNone = set' "layout" $ toForeign "none"
+layoutNone ∷ ∀ m. Monad m ⇒ DSL m
+layoutNone = set' "layout" $ unsafeToForeign "none"
 
-layoutCircular ∷ ∀ i m. Monad m ⇒ DSL (layout ∷ I|i) m
-layoutCircular = set' "layout" $ toForeign "circular"
+layoutCircular ∷ ∀ m. Monad m ⇒ DSL m
+layoutCircular = set' "layout" $ unsafeToForeign "circular"
 
-layoutForce ∷ ∀ i m. Monad m ⇒ DSL (layout ∷ I|i) m
-layoutForce = set' "layout" $ toForeign "force"
+layoutForce ∷ ∀ m. Monad m ⇒ DSL m
+layoutForce = set' "layout" $ unsafeToForeign "force"
 
-missingSeries ∷ ∀ i m. Monad m ⇒ DSL (missing ∷ I|i) m
+missingSeries ∷ ∀ m. Monad m ⇒ DSL m
 missingSeries = set' "" undefinedValue
 
-missingItem ∷ ∀ i m. Monad m ⇒ DSL (item ∷ I|i) m
+missingItem ∷ ∀ m. Monad m ⇒ DSL m
 missingItem = set' "" undefinedValue
 
-rotate ∷ ∀ i m. Monad m ⇒ Number → DSL (rotate ∷ I|i) m
-rotate = set' "rotate" <<< toForeign
+rotate ∷ ∀ m. Monad m ⇒ Number → DSL m
+rotate = set' "rotate" <<< unsafeToForeign
 
-fontFamily ∷ ∀ i m. Monad m ⇒ String → DSL (fontFamily ∷ I|i) m
-fontFamily = set' "fontFamily" <<< toForeign
+fontFamily ∷ ∀ m. Monad m ⇒ String → DSL m
+fontFamily = set' "fontFamily" <<< unsafeToForeign
 
-addParallelAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.ParallelAxisI m ~> CommandsT (addParallelAxis ∷ I|i) m
+addParallelAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 addParallelAxis = set "" <=< buildObj
 
-parallelAxes ∷ ∀ i m. Monad m ⇒ CommandsT TP.ParallelAxesI m ~> CommandsT (parallelAxis ∷ I|i) m
+parallelAxes ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 parallelAxes = set "parallelAxis" <=< buildArr
 
-parallelAxisDefault ∷ ∀ i m. Monad m ⇒ CommandsT TP.ParallelAxisI m ~> CommandsT (parallelAxisDefault ∷ I|i) m
+parallelAxisDefault ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 parallelAxisDefault = set "parallelAxisDefault" <=< buildObj
 
-yAxes ∷ ∀ i m. Monad m ⇒ CommandsT TP.YAxesI m ~> CommandsT (yAxis ∷ I|i) m
+yAxes ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 yAxes = set "yAxis" <=< buildArr
 
-xAxes ∷ ∀ i m. Monad m ⇒ CommandsT TP.XAxesI m ~> CommandsT (xAxis ∷ I|i) m
+xAxes ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 xAxes = set "xAxis" <=< buildArr
 
-addYAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.YAxisI m ~> CommandsT (addYAxis ∷ I|i) m
+addYAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 addYAxis = set "" <=< buildObj
 
-addXAxis ∷ ∀ i m. Monad m ⇒ CommandsT TP.XAxisI m ~> CommandsT (addXAxis ∷ I|i) m
+addXAxis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 addXAxis = set "" <=< buildObj
 
-interval ∷ ∀ i m. Monad m ⇒ Int → DSL (interval ∷ I|i) m
-interval = set' "interval" <<< toForeign
+interval ∷ ∀ m. Monad m ⇒ Int → DSL m
+interval = set' "interval" <<< unsafeToForeign
 
-lineAxisPointer ∷ ∀ i m. Monad m ⇒ DSL (axisPointerType ∷ I|i) m
-lineAxisPointer = set' "type" $ toForeign "line"
+lineAxisPointer ∷ ∀ m. Monad m ⇒ DSL m
+lineAxisPointer = set' "type" $ unsafeToForeign "line"
 
-crossAxisPointer ∷ ∀ i m. Monad m ⇒ DSL (axisPointerType ∷ I|i) m
-crossAxisPointer = set' "type" $ toForeign "cross"
+crossAxisPointer ∷ ∀ m. Monad m ⇒ DSL m
+crossAxisPointer = set' "type" $ unsafeToForeign "cross"
 
-solidLine ∷ ∀ i m. Monad m ⇒ DSL (lineType ∷ I|i) m
-solidLine = set' "type" $ toForeign "solid"
+solidLine ∷ ∀ m. Monad m ⇒ DSL m
+solidLine = set' "type" $ unsafeToForeign "solid"
 
-dashedLine ∷ ∀ i m. Monad m ⇒ DSL (lineType ∷ I|i) m
-dashedLine = set' "type" $ toForeign "dashed"
+dashedLine ∷ ∀ m. Monad m ⇒ DSL m
+dashedLine = set' "type" $ unsafeToForeign "dashed"
 
-dottedLine ∷ ∀ i m. Monad m ⇒ DSL (lineType ∷ I|i) m
-dottedLine = set' "type" $ toForeign "dotted"
+dottedLine ∷ ∀ m. Monad m ⇒ DSL m
+dottedLine = set' "type" $ unsafeToForeign "dotted"
 
-widthNum ∷ ∀ i m. Monad m ⇒ Number → DSL (width ∷ I|i) m
-widthNum = set' "width" <<< toForeign
+widthNum ∷ ∀ m. Monad m ⇒ Number → DSL m
+widthNum = set' "width" <<< unsafeToForeign
 
-crossStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.CrossStyleI m ~> CommandsT (crossStyle ∷ I|i) m
+crossStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 crossStyle = set "crossStyle" <=< buildObj
 
-normal ∷ ∀ p i m. Monad m ⇒ CommandsT p m ~> CommandsT (normal ∷ R p |i) m
+normal ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 normal = set "normal" <=< buildObj
 
-lineStyle ∷ ∀ ρ i m. Monad m ⇒ CommandsT ρ m ~> CommandsT (lineStyle ∷ R ρ |i) m
+lineStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 lineStyle = set "lineStyle" <=< buildObj
 
-areaStyle ∷ ∀ ρ i m. Monad m ⇒ CommandsT ρ m ~> CommandsT (areaStyle ∷ R ρ |i) m
+areaStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 areaStyle = set "areaStyle" <=< buildObj
 
-emphasis ∷ ∀ ρ i m. Monad m ⇒ CommandsT ρ m ~> CommandsT (emphasis ∷ R ρ|i) m
+emphasis ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 emphasis = set "emphasis" <=< buildObj
 
-heightPixelOrPercent ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (height ∷ I|i) m
+heightPixelOrPercent ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 heightPixelOrPercent = set' "height" <<< T.pixelOrPercentToForeign
 
-heightPct ∷ ∀ i m. Monad m ⇒ Number → DSL (width ∷ I|i) m
-heightPct = set' "height" <<< toForeign <<< (_ <> "%") <<< show
+heightPct ∷ ∀ m. Monad m ⇒ Number → DSL m
+heightPct = set' "height" <<< unsafeToForeign <<< (_ <> "%") <<< show
 
-widthPixelOrPercent ∷ ∀ i m. Monad m ⇒ T.PixelOrPercent → DSL (width ∷ I|i) m
+widthPixelOrPercent ∷ ∀ m. Monad m ⇒ T.PixelOrPercent → DSL m
 widthPixelOrPercent = set' "width" <<< T.pixelOrPercentToForeign
 
-padding ∷ ∀ i m. Monad m ⇒ Number → DSL (padding ∷ I|i) m
-padding = set' "padding" <<< toForeign
+padding ∷ ∀ m. Monad m ⇒ Number → DSL m
+padding = set' "padding" <<< unsafeToForeign
 
-enterable ∷ ∀ i m. Monad m ⇒ Boolean → DSL (enterable ∷ I|i) m
-enterable = set' "enterable" <<< toForeign
+enterable ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+enterable = set' "enterable" <<< unsafeToForeign
 
-transitionDuration ∷ ∀ i m. Monad m ⇒ Number → DSL (transitionDuration ∷ I|i) m
-transitionDuration = set' "transitionDuration" <<< toForeign
+transitionDuration ∷ ∀ m. Monad m ⇒ Number → DSL m
+transitionDuration = set' "transitionDuration" <<< unsafeToForeign
 
-extraCssText ∷ ∀ i m. Monad m ⇒ String → DSL (extraCssText ∷ I|i) m
-extraCssText = set' "extraCssText" <<< toForeign
+extraCssText ∷ ∀ m. Monad m ⇒ String → DSL m
+extraCssText = set' "extraCssText" <<< unsafeToForeign
 
-gridIndex ∷ ∀ i m. Monad m ⇒ Int → DSL (gridIndex ∷ I|i) m
-gridIndex a = set' "gridIndex" $ toForeign a
+gridIndex ∷ ∀ m. Monad m ⇒ Int → DSL m
+gridIndex a = set' "gridIndex" $ unsafeToForeign a
 
-radarIndex ∷ ∀ i m. Monad m ⇒ Number → DSL (radarIndex ∷ I|i) m
-radarIndex = set' "radarIndex" <<< toForeign
+radarIndex ∷ ∀ m. Monad m ⇒ Number → DSL m
+radarIndex = set' "radarIndex" <<< unsafeToForeign
 
-parallelIndex ∷ ∀ i m. Monad m ⇒ Int → DSL (parallelIndex ∷ I|i) m
-parallelIndex = set' "parallelIndex" <<< toForeign
+parallelIndex ∷ ∀ m. Monad m ⇒ Int → DSL m
+parallelIndex = set' "parallelIndex" <<< unsafeToForeign
 
-treeMapNodeId ∷ ∀ i m. Monad m ⇒ String → DSL (treeMapNodeId ∷ I|i) m
-treeMapNodeId = set' "id" <<< toForeign
+treeMapNodeId ∷ ∀ m. Monad m ⇒ String → DSL m
+treeMapNodeId = set' "id" <<< unsafeToForeign
 
-visualDimension ∷ ∀ i m. Monad m ⇒ Int → DSL (visualDimension ∷ I|i) m
-visualDimension = set' "visualDimension" <<< toForeign
+visualDimension ∷ ∀ m. Monad m ⇒ Int → DSL m
+visualDimension = set' "visualDimension" <<< unsafeToForeign
 
-visibleMin ∷ ∀ i m. Monad m ⇒ Number → DSL (visibleMin ∷ I|i) m
-visibleMin = set' "visibleMin" <<< toForeign
+visibleMin ∷ ∀ m. Monad m ⇒ Number → DSL m
+visibleMin = set' "visibleMin" <<< unsafeToForeign
 
-childVisibleMin ∷ ∀ i m. Monad m ⇒ Number → DSL (childVisibleMin ∷ I|i) m
-childVisibleMin = set' "childVisibleMin" <<< toForeign
+childVisibleMin ∷ ∀ m. Monad m ⇒ Number → DSL m
+childVisibleMin = set' "childVisibleMin" <<< unsafeToForeign
 
-category ∷ ∀ i m. Monad m ⇒ Int → DSL (category ∷ I|i) m
-category = set' "category" <<< toForeign
+category ∷ ∀ m. Monad m ⇒ Int → DSL m
+category = set' "category" <<< unsafeToForeign
 
-coords ∷ ∀ i f m. Monad m ⇒ F.Foldable f ⇒ f T.Coord → DSL (coords ∷ I|i) m
-coords a = set' "coords" $ toForeign $ F.foldMap (Arr.singleton <<< toForeign) a
+coords ∷ ∀ f m. Monad m ⇒ F.Foldable f ⇒ f T.Coord → DSL m
+coords a = set' "coords" $ unsafeToForeign $ F.foldMap (Arr.singleton <<< unsafeToForeign) a
 
-valueIndex ∷ ∀ i m. Monad m ⇒ Number → DSL (valueIndex ∷ I|i) m
-valueIndex = set' "valueIndex" <<< toForeign
+valueIndex ∷ ∀ m. Monad m ⇒ Number → DSL m
+valueIndex = set' "valueIndex" <<< unsafeToForeign
 
-valueDim ∷ ∀ i m. Monad m ⇒ String → DSL (valueDim ∷ I|i) m
-valueDim = set' "valueDim" <<< toForeign
+valueDim ∷ ∀ m. Monad m ⇒ String → DSL m
+valueDim = set' "valueDim" <<< unsafeToForeign
 
-markType ∷ ∀ i m. Monad m ⇒ String → DSL (markType ∷ I|i) m
-markType = set' "type" <<< toForeign
+markType ∷ ∀ m. Monad m ⇒ String → DSL m
+markType = set' "type" <<< unsafeToForeign
 
-margin ∷ ∀ i m. Monad m ⇒ Int → DSL (margin ∷ I|i) m
-margin = set' "margin" <<< toForeign
+margin ∷ ∀ m. Monad m ⇒ Int → DSL m
+margin = set' "margin" <<< unsafeToForeign
 
-markLine ∷ ∀ i m. Monad m ⇒ CommandsT TP.MarkLineI m ~> CommandsT (markLine ∷ I|i) m
+markLine ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 markLine = set "markLine" <=< buildObj
 
-markPoint ∷ ∀ i m. Monad m ⇒ CommandsT TP.MarkPointI m ~> CommandsT (markPoint ∷ I|i) m
+markPoint ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 markPoint = set "markPoint" <=< buildObj
 
-markArea ∷ ∀ i m. Monad m ⇒ CommandsT TP.MarkAreaI m ~> CommandsT (markArea ∷ I|i) m
+markArea ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 markArea = set "markArea" <=< buildObj
 
-repulsion ∷ ∀ i m. Monad m ⇒ Number → DSL (repulsion ∷ I|i) m
-repulsion = set' "repulsion" <<< toForeign
+repulsion ∷ ∀ m. Monad m ⇒ Number → DSL m
+repulsion = set' "repulsion" <<< unsafeToForeign
 
-gravity ∷ ∀ i m. Monad m ⇒ Number → DSL (gravity ∷ I|i) m
-gravity = set' "gravity" <<< toForeign
+gravity ∷ ∀ m. Monad m ⇒ Number → DSL m
+gravity = set' "gravity" <<< unsafeToForeign
 
-edgeLength ∷ ∀ i m. Monad m ⇒ Number → DSL (edgeLength ∷ I|i) m
-edgeLength = set' "edgeLength" <<< toForeign
+edgeLength ∷ ∀ m. Monad m ⇒ Number → DSL m
+edgeLength = set' "edgeLength" <<< unsafeToForeign
 
-edgeLengths ∷ ∀ i m. Monad m ⇒ Number → Number → DSL (edgeLength ∷ I|i) m
-edgeLengths a b = set' "edgeLength" $ toForeign [ a, b ]
+edgeLengths ∷ ∀ m. Monad m ⇒ Number → Number → DSL m
+edgeLengths a b = set' "edgeLength" $ unsafeToForeign [ a, b ]
 
-layoutAnimation ∷ ∀ i m. Monad m ⇒ Boolean → DSL (layoutAnimation ∷ I|i) m
-layoutAnimation = set' "layoutAnimation" <<< toForeign
+layoutAnimation ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+layoutAnimation = set' "layoutAnimation" <<< unsafeToForeign
 
-circular ∷ ∀ i m. Monad m ⇒ CommandsT TP.CircularI m ~> CommandsT (circular ∷ I|i) m
+circular ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 circular = set "circular" <=< buildObj
 
-rotateLabel ∷ ∀ i m. Monad m ⇒ Boolean → DSL (rotateLabel ∷ I|i) m
-rotateLabel = set' "rotateLabel" <<< toForeign
+rotateLabel ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+rotateLabel = set' "rotateLabel" <<< unsafeToForeign
 
-force ∷ ∀ i m. Monad m ⇒ CommandsT TP.ForceI m ~> CommandsT (force ∷ I|i) m
+force ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 force = set "force" <=< buildObj
 
-buildCategories ∷ ∀ i m. Monad m ⇒ CommandsT TP.CategoriesI m ~> CommandsT (categories ∷ I|i) m
+buildCategories ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildCategories = set "categories" <=< buildArr
 
-addCategory ∷ ∀ i m. Monad m ⇒ CommandsT TP.CategoryI m ~> CommandsT (category ∷ I|i) m
+addCategory ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 addCategory = set "" <=< buildObj
 
-colorSource ∷ ∀ i m. Monad m ⇒ DSL (color ∷ I|i) m
-colorSource = set' "color" $ toForeign "source"
+colorSource ∷ ∀ m. Monad m ⇒ DSL m
+colorSource = set' "color" $ unsafeToForeign "source"
 
-colorTarget ∷ ∀ i m. Monad m ⇒ DSL (color ∷ I|i) m
-colorTarget = set' "target" $ toForeign "target"
+colorTarget ∷ ∀ m. Monad m ⇒ DSL m
+colorTarget = set' "target" $ unsafeToForeign "target"
 
-buildCoord ∷ ∀ i m. Monad m ⇒ CommandsT TP.PointI m ~> CommandsT (coord ∷ I|i) m
+buildCoord ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildCoord dsl = do
   Tuple a xx ← get "x" dsl
   Tuple _ yy ← get "y" dsl
-  set' "coord" $ toForeign $ Arr.catMaybes [ xx, yy ]
+  set' "coord" $ unsafeToForeign $ Arr.catMaybes [ xx, yy ]
   pure a
 
-buildCenter ∷ ∀ i m. Monad m ⇒ CommandsT TP.PointI m ~> CommandsT (center ∷ I|i) m
+buildCenter ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildCenter dsl = do
   Tuple a xx ← get "x" dsl
   Tuple _ yy ← get "y" dsl
-  set' "center" $ toForeign $ Arr.catMaybes [ xx, yy ]
+  set' "center" $ unsafeToForeign $ Arr.catMaybes [ xx, yy ]
   pure a
 
-buildRadius ∷ ∀ i m. Monad m ⇒ CommandsT TP.RadiusI m ~> CommandsT (radius ∷ I|i) m
+buildRadius ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildRadius dsl = do
   Tuple a s ← get "start" dsl
   Tuple _ e ← get "end" dsl
-  set' "radius" $ toForeign $ Arr.concat [s, e]
+  set' "radius" $ unsafeToForeign $ Arr.concat [s, e]
   pure a
 
-setStart ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (start ∷ I|i) m
+setStart ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setStart dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "start"
   pure a
 
-setEnd ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (end ∷ I|i) m
+setEnd ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setEnd dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "end"
   pure a
 
-setBarWidth ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (barWidth ∷ I|i) m
+setBarWidth ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setBarWidth dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "barWidth"
   pure a
 
-setX ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (x ∷ I|i) m
+setX ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setX dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "x"
   pure a
 
-setY ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (y ∷ I|i) m
+setY ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setY dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "y"
   pure a
 
-setZ ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (z ∷ I|i) m
+setZ ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setZ dsl = do
   Tuple a keys  ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "z"
   pure a
 
-coordXIx ∷ ∀ i m. Monad m ⇒ Int → DSL (x ∷ I|i) m
-coordXIx = set' "x" <<< toForeign
+coordXIx ∷ ∀ m. Monad m ⇒ Int → DSL m
+coordXIx = set' "x" <<< unsafeToForeign
 
-coordXValue ∷ ∀ i m. Monad m ⇒ String → DSL (x ∷ I|i) m
-coordXValue = set' "x" <<< toForeign
+coordXValue ∷ ∀ m. Monad m ⇒ String → DSL m
+coordXValue = set' "x" <<< unsafeToForeign
 
-coordY ∷ ∀ i m. Monad m ⇒ String → DSL (y ∷ I|i) m
-coordY = set' "y" <<< toForeign
+coordY ∷ ∀ m. Monad m ⇒ String → DSL m
+coordY = set' "y" <<< unsafeToForeign
 
-pixels ∷ ∀ i m. Monad m ⇒ Int → DSL (pixels ∷ I|i) m
-pixels = set' "pixels" <<< toForeign
+pixels ∷ ∀ m. Monad m ⇒ Int → DSL m
+pixels = set' "pixels" <<< unsafeToForeign
 
-percents ∷ ∀ i m. Monad m ⇒ Number → DSL (percents ∷ I|i) m
-percents = set' "percents" <<< toForeign <<< (_ <> "%") <<< show
+percents ∷ ∀ m. Monad m ⇒ Number → DSL m
+percents = set' "percents" <<< unsafeToForeign <<< (_ <> "%") <<< show
 
-setWidth ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (width ∷ I|i) m
+setWidth ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 setWidth dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "width"
   pure a
 
-buildGaugeRadius ∷ ∀ i m. Monad m ⇒ CommandsT TP.DimensionI m ~> CommandsT (gaugeRadius ∷ I|i) m
+buildGaugeRadius ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildGaugeRadius dsl = do
   Tuple a keys ← lastWithKeys ["pixels", "percents"] dsl
   F.for_ (keys ∷ Array Foreign) $ set' "radius"
   pure a
 
-buildOffsetCenter ∷ ∀ i m. Monad m ⇒ CommandsT TP.PointI m ~> CommandsT (offsetCenter ∷ I|i) m
+buildOffsetCenter ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildOffsetCenter dsl = do
   Tuple a xx ← get "x" dsl
   Tuple _ yy ← get "y" dsl
-  set' "offsetCenter" $ toForeign $ Arr.catMaybes [ xx, yy ]
+  set' "offsetCenter" $ unsafeToForeign $ Arr.catMaybes [ xx, yy ]
   pure a
 
-containLabel ∷ ∀ i m. Monad m ⇒ Boolean → DSL (containLabel ∷ I|i) m
-containLabel = set' "containLabel" <<< toForeign
+containLabel ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+containLabel = set' "containLabel" <<< unsafeToForeign
 
-polarCoordinateSystem ∷ ∀ i m. Monad m ⇒ DSL (coordinateSystem ∷ I|i) m
-polarCoordinateSystem = set' "coordinateSystem" $ toForeign "polar"
+polarCoordinateSystem ∷ ∀ m. Monad m ⇒ DSL m
+polarCoordinateSystem = set' "coordinateSystem" $ unsafeToForeign "polar"
 
-cartesianCoordinateSystem ∷ ∀ i m. Monad m ⇒ DSL (coordinateSystem ∷ I|i) m
-cartesianCoordinateSystem = set' "coordinateSystem" $ toForeign "cartesian2d"
+cartesianCoordinateSystem ∷ ∀ m. Monad m ⇒ DSL m
+cartesianCoordinateSystem = set' "coordinateSystem" $ unsafeToForeign "cartesian2d"
 
-geoCoordinateSystem ∷ ∀ i m. Monad m ⇒ DSL (coordinateSystem ∷ I|i) m
-geoCoordinateSystem = set' "coordinateSystem" $ toForeign "geo"
+geoCoordinateSystem ∷ ∀ m. Monad m ⇒ DSL m
+geoCoordinateSystem = set' "coordinateSystem" $ unsafeToForeign "geo"
 
-calendarCoordinateSystem ∷ ∀ i m. Monad m ⇒ DSL (coordinateSystem ∷ I|i) m
-calendarCoordinateSystem = set' "coordinateSystem" $ toForeign "calendar"
+calendarCoordinateSystem ∷ ∀ m. Monad m ⇒ DSL m
+calendarCoordinateSystem = set' "coordinateSystem" $ unsafeToForeign "calendar"
 
-dim ∷ ∀ i m. Monad m ⇒ Int → DSL (dim ∷ I|i) m
-dim = set' "dim" <<< toForeign
+dim ∷ ∀ m. Monad m ⇒ Int → DSL m
+dim = set' "dim" <<< unsafeToForeign
 
-nameLocationStart ∷ ∀ i m. Monad m ⇒ DSL (nameLocation ∷ I|i) m
-nameLocationStart = set' "nameLocation" $ toForeign "start"
+nameLocationStart ∷ ∀ m. Monad m ⇒ DSL m
+nameLocationStart = set' "nameLocation" $ unsafeToForeign "start"
 
-nameLocationEnd ∷ ∀ i m. Monad m ⇒ DSL (nameLocation ∷ I|i) m
-nameLocationEnd = set' "nameLocation" $ toForeign "end"
+nameLocationEnd ∷ ∀ m. Monad m ⇒ DSL m
+nameLocationEnd = set' "nameLocation" $ unsafeToForeign "end"
 
-nameLocationMiddle ∷ ∀ i m. Monad m ⇒ DSL (nameLocation ∷ I|i) m
-nameLocationMiddle = set' "nameLocation" $ toForeign "middle"
+nameLocationMiddle ∷ ∀ m. Monad m ⇒ DSL m
+nameLocationMiddle = set' "nameLocation" $ unsafeToForeign "middle"
 
-nameTextStyle ∷ ∀ i m. Monad m ⇒ CommandsT TP.TextStyleI m ~> CommandsT (nameTextStyle ∷ I|i) m
+nameTextStyle ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 nameTextStyle o = set "nameTextStyle" =<< buildObj o
 
-nameRotate ∷ ∀ i m. Monad m ⇒ Number → DSL (nameRotate ∷ I|i) m
-nameRotate o = set' "nameRotate" $ toForeign o
+nameRotate ∷ ∀ m. Monad m ⇒ Number → DSL m
+nameRotate o = set' "nameRotate" $ unsafeToForeign o
 
-buildCellSize ∷ ∀ i m. Monad m ⇒ CommandsT TP.ValuesI m ~> CommandsT (cellSize ∷ I|i) m
+buildCellSize ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildCellSize = set "cellSize" <=< buildArr
 
-buildRange ∷ ∀ i m. Monad m ⇒ CommandsT TP.ValuesI m ~> CommandsT (range ∷ I|i) m
+buildRange ∷ ∀ m. Monad m ⇒ CommandsT m ~> CommandsT m
 buildRange = set "range" <=< buildArr
 
-addDateValue ∷ ∀ i m. Monad m ⇒ Date → DSL (addValue ∷ I|i) m
+addDateValue ∷ ∀ m. Monad m ⇒ Date → DSL m
 addDateValue dt =
- set' "" <<< toForeign
+ set' "" <<< unsafeToForeign
    $ year' dt
    <> "-"
    <> month' dt
@@ -1175,5 +1170,5 @@ addDateValue dt =
  month' = show <<< fromEnum <<< month
  day' = show <<< fromEnum <<< day
 
-useUTC ∷ ∀ i m. Monad m ⇒ Boolean → DSL (useUTC ∷ I|i) m
-useUTC = set' "useUTC" <<< toForeign
+useUTC ∷ ∀ m. Monad m ⇒ Boolean → DSL m
+useUTC = set' "useUTC" <<< unsafeToForeign

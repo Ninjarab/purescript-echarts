@@ -4,9 +4,8 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Effect.Aff (class MonadAff)
+import Effect.Aff.Class (class MonadAff)
 import Control.Monad.Cont.Class (class MonadCont)
-import Effect (kind Effect)
 import Effect.Class (class MonadEffect)
 import Control.Monad.Error.Class (class MonadError, class MonadThrow)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
@@ -21,7 +20,7 @@ import Control.Plus (class Plus, empty)
 import Data.Array as Arr
 import Data.Bifunctor (rmap)
 import Data.Foldable as F
-import Foreign (Foreign, toForeign)
+import Foreign (Foreign, unsafeToForeign)
 import Data.Identity (Identity)
 import Data.Maybe (Maybe(..), maybe)
 import Data.Newtype (class Newtype, unwrap)
@@ -32,57 +31,57 @@ import ECharts.Types as ET
 type KeyVal = Tuple String Foreign
 type Pairs = Array KeyVal
 
-newtype CommandsT (i ∷ # Effect) m a = CommandsT (WriterT Pairs m a)
+newtype CommandsT m a = CommandsT (WriterT Pairs m a)
 
-type DSL i m = CommandsT i m Unit
-type DSL' i = CommandsT i Identity Unit
+type DSL m = CommandsT m Unit
+type DSL' = CommandsT Identity Unit
 
 derive instance newtypeCommandsT
-  ∷ Newtype (CommandsT i m a) _
+  ∷ Newtype (CommandsT m a) _
 derive newtype instance functorDSL
-  ∷ Functor m ⇒ Functor (CommandsT i m)
+  ∷ Functor m ⇒ Functor (CommandsT m)
 derive newtype instance applyDSL
-  ∷ Apply m ⇒ Apply (CommandsT i m)
+  ∷ Apply m ⇒ Apply (CommandsT m)
 derive newtype instance applicativeDSL
-  ∷ Applicative m ⇒ Applicative (CommandsT i m)
+  ∷ Applicative m ⇒ Applicative (CommandsT m)
 derive newtype instance bindDSL
-  ∷ Bind m ⇒ Bind (CommandsT i m)
+  ∷ Bind m ⇒ Bind (CommandsT m)
 derive newtype instance monadDSL
-  ∷ Monad m ⇒ Monad (CommandsT i m)
+  ∷ Monad m ⇒ Monad (CommandsT m)
 derive newtype instance monadTellCommandsT
-  ∷ Monad m ⇒ MonadTell (Array (Tuple String Foreign)) (CommandsT i m)
+  ∷ Monad m ⇒ MonadTell (Array (Tuple String Foreign)) (CommandsT m)
 derive newtype instance monadWriterCommandsT
-  ∷ Monad m ⇒ MonadWriter (Array (Tuple String Foreign)) (CommandsT i m)
+  ∷ Monad m ⇒ MonadWriter (Array (Tuple String Foreign)) (CommandsT m)
 derive newtype instance plusCommandsT
-  ∷ Plus m ⇒ Plus (CommandsT i m)
+  ∷ Plus m ⇒ Plus (CommandsT m)
 derive newtype instance altCommandsT
-  ∷ Alt m ⇒ Alt (CommandsT i m)
+  ∷ Alt m ⇒ Alt (CommandsT m)
 derive newtype instance alternativeCommandsT
-  ∷ Alternative m ⇒ Alternative (CommandsT i m)
+  ∷ Alternative m ⇒ Alternative (CommandsT m)
 derive newtype instance monadRecCommandsT
-  ∷ MonadRec m ⇒ MonadRec (CommandsT i m)
+  ∷ MonadRec m ⇒ MonadRec (CommandsT m)
 derive newtype instance monadZeroCommandsT
-  ∷ MonadZero m ⇒ MonadZero (CommandsT i m)
+  ∷ MonadZero m ⇒ MonadZero (CommandsT m)
 derive newtype instance monadPlusCommandsT
-  ∷ MonadPlus m ⇒ MonadPlus (CommandsT i m)
+  ∷ MonadPlus m ⇒ MonadPlus (CommandsT m)
 derive newtype instance monadAffCommandsT
-  ∷ MonadAff e m ⇒ MonadAff e (CommandsT i m)
-derive newtype instance monadEffCommandsT
-  ∷ MonadEffect e m ⇒ MonadEffect e (CommandsT i m)
+  ∷ MonadAff m ⇒ MonadAff (CommandsT m)
+derive newtype instance monadEffectCommandsT
+  ∷ MonadEffect m ⇒ MonadEffect (CommandsT m)
 derive newtype instance monadContCommandsT
-  ∷ MonadCont m ⇒ MonadCont (CommandsT i m)
+  ∷ MonadCont m ⇒ MonadCont (CommandsT m)
 derive newtype instance monadThrowCommandsT
-  ∷ MonadThrow e m ⇒ MonadThrow e (CommandsT i m)
+  ∷ MonadThrow e m ⇒ MonadThrow e (CommandsT m)
 derive newtype instance monadErrorCommandsT
-  ∷ MonadError e m ⇒ MonadError e (CommandsT i m)
+  ∷ MonadError e m ⇒ MonadError e (CommandsT m)
 derive newtype instance monadAskCommandsT
-  ∷ MonadAsk r m ⇒ MonadAsk r (CommandsT i m)
+  ∷ MonadAsk r m ⇒ MonadAsk r (CommandsT m)
 derive newtype instance monadReaderCommandsT
-  ∷ MonadReader r m ⇒ MonadReader r (CommandsT i m)
+  ∷ MonadReader r m ⇒ MonadReader r (CommandsT m)
 derive newtype instance monadStateCommandsT
-  ∷ MonadState s m ⇒ MonadState s (CommandsT i m)
+  ∷ MonadState s m ⇒ MonadState s (CommandsT m)
 
-derive newtype instance monadTransCommandsT ∷ MonadTrans (CommandsT i)
+derive newtype instance monadTransCommandsT ∷ MonadTrans CommandsT
 
 set' ∷ ∀ m. MonadTell Pairs m ⇒ String → Foreign → m Unit
 set' k v = tell $ Arr.singleton $ Tuple k v
@@ -93,12 +92,12 @@ set k (Tuple a v) = do
   pure a
 
 get
-  ∷ ∀ i m f a ii
+  ∷ ∀ m f a
   . Monad m
   ⇒ Alternative f
   ⇒ String
-  → CommandsT i m a
-  → CommandsT ii m (Tuple a (f Foreign))
+  → CommandsT m a
+  → CommandsT m (Tuple a (f Foreign))
 get k cs =
   lift
     $ unwrap cs
@@ -106,13 +105,13 @@ get k cs =
     >>> map (rmap (maybe empty pure <<< lookup k))
 
 lastWithKeys
-  ∷ ∀ i f m w a ii
+  ∷ ∀ f m w a
   . F.Foldable f
   ⇒ Monad m
   ⇒ Alternative w
   ⇒ f String
-  → CommandsT i m a
-  → CommandsT ii m (Tuple a (w Foreign))
+  → CommandsT m a
+  → CommandsT m (Tuple a (w Foreign))
 lastWithKeys ks cs =
   lift
     $ unwrap cs
@@ -126,23 +125,23 @@ lastWithKeys ks cs =
 applyOnePair ∷ Tuple String Foreign → Foreign → Foreign
 applyOnePair opt obj = uncurry (unsafeSetField obj) opt
 
-interpretT ∷ ∀ i m a. Functor m ⇒ CommandsT i m a → m ET.Option
+interpretT ∷ ∀ m a. Functor m ⇒ CommandsT m a → m ET.Option
 interpretT cs =
   map ET.Option $ unwrap cs # execWriterT >>> map (F.foldl (flip applyOnePair) $ emptyObject unit)
 
-interpret ∷ ∀ i. DSL' i → ET.Option
+interpret ∷ DSL' → ET.Option
 interpret = unwrap <<< interpretT
 
-buildObj ∷ ∀ i m a ii. Monad m ⇒ CommandsT i m a → CommandsT ii m (Tuple a Foreign)
+buildObj ∷ ∀ m a. Monad m ⇒ CommandsT m a → CommandsT m (Tuple a Foreign)
 buildObj cs =
   lift $ unwrap cs # runWriterT >>> map (rmap $ F.foldl (flip applyOnePair) $ emptyObject unit)
 
-buildSeries ∷ ∀ i m a ii. Monad m ⇒ CommandsT i m a → CommandsT ii m (Tuple a Foreign)
+buildSeries ∷ ∀ m a. Monad m ⇒ CommandsT m a → CommandsT m (Tuple a Foreign)
 buildSeries cs =
-  lift $ unwrap cs # runWriterT >>> map (rmap $ toForeign <<< typify)
+  lift $ unwrap cs # runWriterT >>> map (rmap $ unsafeToForeign <<< typify)
   where
-  typify = map \(Tuple ty f) → unsafeSetField f "type" $ toForeign ty
+  typify = map \(Tuple ty f) → unsafeSetField f "type" $ unsafeToForeign ty
 
-buildArr ∷ ∀ i m a ii. Monad m ⇒ CommandsT i m a → CommandsT ii m (Tuple a Foreign)
+buildArr ∷ ∀ m a. Monad m ⇒ CommandsT m a → CommandsT m (Tuple a Foreign)
 buildArr cs =
-  lift $ unwrap cs # runWriterT >>> map (rmap $ toForeign <<< map snd)
+  lift $ unwrap cs # runWriterT >>> map (rmap $ unsafeToForeign <<< map snd)

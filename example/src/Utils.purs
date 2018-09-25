@@ -10,16 +10,11 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Random (random)
-import Control.Monad.Except (runExcept)
-
 import Data.Array ((!!), length)
 import Data.Int as Int
-import Data.Maybe (Maybe(..), fromJust)
-import Data.Either (either)
+import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
-import Foreign (toForeign)
 import Data.NonEmpty as NE
-
 import Web.Event.EventTarget (eventListener, addEventListener)
 import Web.HTML (window)
 import Web.HTML.Event.EventTypes (load)
@@ -27,9 +22,7 @@ import Web.HTML.HTMLElement (HTMLElement)
 import Web.DOM.Document (toEventTarget, toNonElementParentNode)
 import Web.HTML.Window (document)
 import Web.DOM.NonElementParentNode as NEPN
-
 import Math (round, pow)
-import Partial.Unsafe (unsafePartial)
 
 getElementById ∷ String → Effect (Maybe HTMLElement)
 getElementById elementId = do
@@ -38,10 +31,7 @@ getElementById elementId = do
   el ← NEPN.getElementById elementId (toNonElementParentNode doc)
   pure el
 
-onLoad
-  ∷ ∀ a
-  . Effect a
-  → Effect Unit
+onLoad ∷ ∀ a. Effect a → Effect Unit
 onLoad handler =
   addEventListener load (eventListener (const handler)) false
     <<< toEventTarget

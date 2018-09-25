@@ -2,22 +2,18 @@ module ECharts.Types where
 
 import Prelude
 
-import Effect (kind Effect)
-import Foreign (Foreign, toForeign)
+import Foreign (Foreign, unsafeToForeign)
 import Data.Variant as V
 import Data.Set (Set)
 
 foreign import data Chart ∷ Type
-
--- | For Effect computation
-foreign import data ECHARTS ∷ Effect
 
 data TooltipTrigger
   = ItemTrigger
   | AxisTrigger
 
 tooltipTriggerToForeign ∷ TooltipTrigger → Foreign
-tooltipTriggerToForeign = toForeign <<< case _ of
+tooltipTriggerToForeign = unsafeToForeign <<< case _ of
   ItemTrigger → "item"
   AxisTrigger → "axis"
 
@@ -27,15 +23,15 @@ data PixelOrPercent
 
 pixelOrPercentToForeign ∷ PixelOrPercent → Foreign
 pixelOrPercentToForeign = case _ of
-  Pixel i → toForeign i
-  Percent n → toForeign $ show n <> "%"
+  Pixel i → unsafeToForeign i
+  Percent n → unsafeToForeign $ show n <> "%"
 
 data Orient
   = Vertical
   | Horizontal
 
 orientToForeign ∷ Orient → Foreign
-orientToForeign = toForeign <<< case _ of
+orientToForeign = unsafeToForeign <<< case _ of
   Vertical → "vertical"
   Horizontal → "horizontal"
 
@@ -46,7 +42,7 @@ data AxisType
   | Log
 
 axisTypeToForeign ∷ AxisType → Foreign
-axisTypeToForeign = toForeign <<< case _ of
+axisTypeToForeign = unsafeToForeign <<< case _ of
   Category → "category"
   Value → "value"
   Time → "time"
@@ -64,7 +60,7 @@ data Symbol
   | None
 
 symbolToForeign ∷ Symbol → Foreign
-symbolToForeign = toForeign <<< case _ of
+symbolToForeign = unsafeToForeign <<< case _ of
   Circle → "circle"
   Rect → "rect"
   RoundRect → "roundRect"
@@ -79,28 +75,28 @@ symbolToForeign = toForeign <<< case _ of
 newtype Point = Point { x ∷ PixelOrPercent, y ∷ PixelOrPercent }
 pointToForeign ∷ Point → Foreign
 pointToForeign (Point {x, y}) =
-  toForeign [ pixelOrPercentToForeign x, pixelOrPercentToForeign y ]
+  unsafeToForeign [ pixelOrPercentToForeign x, pixelOrPercentToForeign y ]
 
 newtype Radius = Radius { start ∷ PixelOrPercent, end ∷ PixelOrPercent }
 radiusToForeign ∷ Radius → Foreign
 radiusToForeign (Radius {start, end}) =
-  toForeign [ pixelOrPercentToForeign start, pixelOrPercentToForeign end ]
+  unsafeToForeign [ pixelOrPercentToForeign start, pixelOrPercentToForeign end ]
 
 newtype SingleValueRadius = SingleValueRadius PixelOrPercent
 singleValueRadiusToForeign ∷ SingleValueRadius → Foreign
 singleValueRadiusToForeign (SingleValueRadius r) = pixelOrPercentToForeign r
 
 numItem ∷ Number → Item
-numItem = Item <<< toForeign
+numItem = Item <<< unsafeToForeign
 
 strItem ∷ String → Item
-strItem = Item <<< toForeign
+strItem = Item <<< unsafeToForeign
 
 numArrItem ∷ Array Number → Item
-numArrItem = Item <<< toForeign
+numArrItem = Item <<< unsafeToForeign
 
 strArrItem ∷ Array String → Item
-strArrItem = Item <<< toForeign
+strArrItem = Item <<< unsafeToForeign
 
 data PointerType
   = LinePointer
@@ -108,7 +104,7 @@ data PointerType
   | ShadowPointer
 
 pointerTypeToForeign ∷ PointerType → Foreign
-pointerTypeToForeign = toForeign <<< case _ of
+pointerTypeToForeign = unsafeToForeign <<< case _ of
   LinePointer → "line"
   CrossPointer → "cross"
   ShadowPointer → "shadow"
@@ -119,13 +115,13 @@ data LineType
   | DottedLine
 
 lineTypeToForeign ∷ LineType → Foreign
-lineTypeToForeign = toForeign <<< case _ of
+lineTypeToForeign = unsafeToForeign <<< case _ of
   SolidLine → "solid"
   DashedLine → "dashed"
   DottedLine → "dotted"
 
 pairItem ∷ Number → Number → Item
-pairItem x y = Item $ toForeign [ x, y ]
+pairItem x y = Item $ unsafeToForeign [ x, y ]
 
 type FormatterInput =
   { componentType ∷ String
@@ -159,9 +155,9 @@ data SelectedMode
 
 selectedModeToForeign ∷ SelectedMode → Foreign
 selectedModeToForeign = case _ of
-  Single → toForeign "single"
-  Multiple → toForeign "multiple"
-  Disabled → toForeign false
+  Single → unsafeToForeign "single"
+  Multiple → unsafeToForeign "multiple"
+  Disabled → unsafeToForeign false
 
 data HorizontalPosition
   = LeftHP
@@ -169,7 +165,7 @@ data HorizontalPosition
   | CenterHP
 
 horizontalPositionToForeign ∷ HorizontalPosition → Foreign
-horizontalPositionToForeign = toForeign <<< case _ of
+horizontalPositionToForeign = unsafeToForeign <<< case _ of
   LeftHP → "left"
   RightHP → "right"
   CenterHP → "center"
@@ -178,7 +174,7 @@ newtype Item = Item Foreign
 newtype Coord = Coord Foreign
 
 coord ∷ Number → Number → Coord
-coord x y = Coord $ toForeign [ x, y ]
+coord x y = Coord $ unsafeToForeign [ x, y ]
 
 type LegendEventR =
   { name ∷ String
